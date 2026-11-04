@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
+  <!-- Supabase JS Client Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
     
@@ -19,28 +22,28 @@
     /* Surface Glassmorphism */
     .glass-panel {
       background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(24px);
+      backdrop-filter: blur(20px);
       box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.35), 0 0 1px 1px rgba(255, 255, 255, 0.3);
     }
 
     /* Ambient Glow Animations */
     @keyframes pulseGlow1 {
-      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
-      50% { transform: translate(25px, 15px) scale(1.15); opacity: 0.3; }
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.18; }
+      50% { transform: translate(20px, 15px) scale(1.1); opacity: 0.28; }
     }
     @keyframes pulseGlow2 {
       0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
-      50% { transform: translate(-25px, -20px) scale(1.1); opacity: 0.25; }
+      50% { transform: translate(-20px, -15px) scale(1.08); opacity: 0.22; }
     }
     .orb-glow-1 { animation: pulseGlow1 9s ease-in-out infinite; }
     .orb-glow-2 { animation: pulseGlow2 11s ease-in-out infinite; }
 
     /* Page Transitions */
     .view-transition {
-      animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeInScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     @keyframes fadeInScale {
-      from { opacity: 0; transform: translateY(10px) scale(0.99); }
+      from { opacity: 0; transform: translateY(8px) scale(0.99); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
@@ -57,19 +60,19 @@
 
   <!-- Interactive Ambient Background -->
   <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-    <div class="absolute -top-36 -left-36 w-[28rem] sm:w-[34rem] h-[28rem] sm:h-[34rem] bg-emerald-600 rounded-full blur-[100px] sm:blur-[120px] orb-glow-1"></div>
-    <div class="absolute top-1/3 -right-36 w-[26rem] sm:w-[32rem] h-[26rem] sm:h-[32rem] bg-teal-500 rounded-full blur-[100px] sm:blur-[120px] orb-glow-2"></div>
-    <div class="absolute -bottom-24 left-1/4 w-[22rem] sm:w-[28rem] h-[22rem] sm:h-[28rem] bg-blue-600/20 rounded-full blur-[110px]"></div>
+    <div class="absolute -top-28 -left-28 w-[24rem] sm:w-[32rem] h-[24rem] sm:h-[32rem] bg-emerald-600 rounded-full blur-[90px] sm:blur-[120px] orb-glow-1"></div>
+    <div class="absolute top-1/3 -right-28 w-[22rem] sm:w-[30rem] h-[22rem] sm:h-[30rem] bg-teal-500 rounded-full blur-[90px] sm:blur-[120px] orb-glow-2"></div>
+    <div class="absolute -bottom-20 left-1/4 w-[20rem] sm:w-[26rem] h-[20rem] sm:h-[26rem] bg-blue-600/15 rounded-full blur-[100px]"></div>
   </div>
 
   <!-- Toast Notifikasi Global -->
-  <div id="toast-container" class="fixed top-4 right-4 left-4 sm:left-auto sm:right-5 sm:top-5 z-50 flex flex-col gap-2 max-w-sm sm:w-full pointer-events-none"></div>
+  <div id="toast-container" class="fixed top-3 right-3 left-3 sm:left-auto sm:right-5 sm:top-5 z-50 flex flex-col gap-2 max-w-sm sm:w-full pointer-events-none"></div>
 
   <!-- HEADER RESPONSIVE (PC & HP) -->
   <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 text-white sticky top-0 z-40">
     <div class="max-w-5xl mx-auto px-3.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
       
-      <!-- Brand & Title (Tidak Tertekuk di HP) -->
+      <!-- Brand & Title Anti-Wrap -->
       <div class="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
         <div class="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-emerald-300 p-[1px] flex items-center justify-center shadow-md shadow-emerald-500/20">
           <div class="w-full h-full bg-slate-900 rounded-[11px] flex items-center justify-center">
@@ -77,23 +80,22 @@
           </div>
         </div>
         <div class="min-w-0">
-          <div class="flex items-center space-x-1.5 sm:space-x-2">
-            <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-slate-100 whitespace-nowrap">
+          <div class="flex items-center space-x-1.5 sm:space-x-2 whitespace-nowrap">
+            <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-slate-100 inline-block">
               EQ-Lite <span class="text-emerald-400 font-semibold">Pro</span>
             </h1>
-            <span class="whitespace-nowrap text-[9px] sm:text-[10px] font-mono px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-bold">GEN-5</span>
+            <span class="inline-block text-[9px] sm:text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">GEN-5</span>
           </div>
-          <!-- Subtitel Otomatis Tersembunyi di Layar HP Sempit -->
-          <p class="hidden sm:block text-[11px] text-slate-400 truncate">PeTIK II Jombang • Evaluasi Akademik & Integritas Pengajar</p>
+          <p class="hidden sm:block text-[11px] text-slate-400 truncate mt-0.5">PeTIK II Jombang • Evaluasi Akademik & Integritas Pengajar</p>
         </div>
       </div>
 
-      <!-- Action Panel Header (Ringkas & Fleksibel) -->
+      <!-- Action Buttons -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <!-- Draft Status: Ikon di HP, Teks di Laptop -->
-        <div id="draft-status" class="hidden items-center gap-1 sm:gap-1.5 px-2 py-1 bg-slate-800/80 border border-slate-700 rounded-lg text-[10px] font-mono text-emerald-400">
-          <i class="fa-solid fa-cloud-arrow-up text-[9px]"></i>
-          <span class="hidden md:inline">Tersimpan</span>
+        <!-- Live Cloud DB Indicator -->
+        <div class="flex items-center gap-1 sm:gap-1.5 px-2 py-1 bg-slate-800/80 border border-slate-700 rounded-lg text-[10px] font-mono text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="hidden md:inline">Supabase DB</span>
         </div>
 
         <!-- Tombol Suara -->
@@ -101,7 +103,7 @@
           <i class="fa-solid fa-volume-high text-emerald-400" id="audio-icon"></i>
         </button>
 
-        <!-- Tombol Masuk Portal Admin -->
+        <!-- Tombol Portal Admin -->
         <button onclick="openAdminModal()" class="px-2.5 sm:px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs text-slate-200 transition flex items-center gap-1.5 active:scale-95 shadow-inner shrink-0">
           <i class="fa-solid fa-shield-halved text-amber-400 text-xs"></i>
           <span class="font-semibold text-[11px] hidden sm:inline">Portal Admin</span>
@@ -110,9 +112,9 @@
       </div>
     </div>
 
-    <!-- Stepper Navigasi Visual (Responsif Sempurna di HP) -->
+    <!-- Stepper Navigasi Visual -->
     <div id="nav-stepper" class="bg-slate-900/60 border-t border-slate-800/80 py-1.5 sm:py-2">
-      <div class="max-w-4xl mx-auto px-3 sm:px-4 flex items-center justify-between text-[10px] sm:text-[11px]">
+      <div class="max-w-4xl mx-auto px-3.5 sm:px-4 flex items-center justify-between text-[10px] sm:text-[11px]">
         <div class="flex items-center gap-1.5 sm:gap-2" id="step-nav-1">
           <span class="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0">1</span>
           <span class="font-semibold text-slate-200 whitespace-nowrap"><span class="hidden sm:inline">Verifikasi </span>NIM</span>
@@ -191,12 +193,12 @@
     <!-- SCREEN 2: Formulir Evaluasi Uraian -->
     <section id="screen-form" class="hidden glass-panel rounded-3xl p-4 sm:p-10 border border-slate-100 max-w-3xl mx-auto w-full view-transition">
       
-      <!-- Profil Mahasantri Header -->
+      <!-- Profil Responden -->
       <div class="mb-5 pb-3 sm:pb-4 border-b border-slate-100 flex items-center justify-between gap-2">
         <div class="min-w-0">
-          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400">Responden Aktif:</span>
-          <h3 class="text-sm sm:text-base font-bold text-slate-900 truncate" id="form-header-nama">-</h3>
-          <p class="text-xs text-emerald-700 font-medium truncate" id="form-header-jurusan">-</p>
+          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Responden Aktif:</span>
+          <h3 class="text-sm sm:text-base font-bold text-slate-900 truncate leading-tight" id="form-header-nama">-</h3>
+          <p class="text-xs text-emerald-700 font-semibold truncate leading-normal" id="form-header-jurusan">-</p>
         </div>
         <button type="button" onclick="backToAuthScreen()" class="px-2.5 sm:px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 rounded-xl transition active:scale-95 flex items-center gap-1 shrink-0">
           <i class="fa-solid fa-arrow-right-arrow-left text-[10px]"></i>
@@ -233,20 +235,20 @@
                 </div>
                 <span class="check-icon hidden text-emerald-600 text-base sm:text-lg"><i class="fa-solid fa-circle-check"></i></span>
               </div>
-              <span class="font-bold text-sm text-slate-900">Digital Marketing (DM)</span>
-              <span class="text-[11px] text-slate-500 mt-0.5">Strategi promosi digital, konten viral & ads</span>
+              <span class="font-bold text-sm text-slate-900 leading-snug">Digital Marketing (DM)</span>
+              <span class="text-[11px] text-slate-500 mt-0.5 leading-normal">Strategi promosi digital, konten viral & ads</span>
             </div>
 
             <div onclick="selectMatkul('Pengembangan Perangkat Lunak (PPL)')" id="card-ppl"
-                 class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 cursor-pointer transition-all duration-200 group active:scale-[0.98]">
+                 class="relative flex flex-col p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 cursor-pointer transition-all duration-200 group active:scale-[0.98]">
               <div class="flex items-center justify-between mb-2">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <i class="fa-solid fa-code text-xs sm:text-sm"></i>
                 </div>
                 <span class="check-icon hidden text-emerald-600 text-base sm:text-lg"><i class="fa-solid fa-circle-check"></i></span>
               </div>
-              <span class="font-bold text-sm text-slate-900">Pengembangan Perangkat Lunak (PPL)</span>
-              <span class="text-[11px] text-slate-500 mt-0.5">Frontend, Backend, SDLC, Database & Git</span>
+              <span class="font-bold text-sm text-slate-900 leading-snug">Pengembangan Perangkat Lunak (PPL)</span>
+              <span class="text-[11px] text-slate-500 mt-0.5 leading-normal">Frontend, Backend, SDLC, Database & Git</span>
             </div>
           </div>
           <input type="hidden" id="selected-matkul" required>
@@ -316,7 +318,7 @@
 
           <textarea id="q-negatif" required rows="3" oninput="handleInputWithAutosave('q-negatif', 'count-q5')"
                     placeholder="Uraikan catatan faktual bila ada, atau gunakan tombol di atas bila pengajar tidak melakukan hal negatif..."
-                    class="w-full p-3 sm:p-3.5 rounded-xl border border-rose-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-none transition text-sm leading-relaxed bg-white"></textarea>
+                    class="w-full p-3.5 rounded-xl border border-rose-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-none transition text-sm leading-relaxed bg-white"></textarea>
         </div>
 
         <div class="pt-2">
@@ -335,7 +337,7 @@
         <i class="fa-solid fa-file-circle-check text-xl sm:text-2xl"></i>
       </div>
       <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Evaluasi Berhasil Direkam!</h2>
-      <p class="text-xs text-slate-500 mt-1 mb-5 sm:mb-6">Jazakumullahu khairan. Laporan evaluasi Anda telah terenkripsi dan dicatat ke pangkalan data mutu PeTIK II Jombang.</p>
+      <p class="text-xs text-slate-500 mt-1 mb-5 sm:mb-6 leading-relaxed">Jazakumullahu khairan. Laporan evaluasi Anda telah terenkripsi dan dicatat ke pangkalan data Supabase PeTIK II Jombang.</p>
 
       <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-4 sm:p-5 mb-5 sm:mb-6 space-y-2.5 sm:space-y-3 text-left text-xs">
         <div class="flex justify-between items-center border-b border-slate-200 pb-2">
@@ -371,7 +373,7 @@
       </div>
     </section>
 
-    <!-- SCREEN 4: DASHBOARD ADMIN DENGAN FITUR HAPUS -->
+    <!-- SCREEN 4: DASHBOARD ADMIN TERHUBUNG KE SUPABASE -->
     <section id="screen-admin" class="hidden glass-panel rounded-3xl p-4 sm:p-8 border border-slate-100 w-full view-transition space-y-5 sm:space-y-6">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-4 sm:pb-5 gap-3 sm:gap-4">
         <div>
@@ -380,7 +382,7 @@
             <span class="text-xs text-slate-400">• PeTIK II Jombang</span>
           </div>
           <h2 class="text-lg sm:text-2xl font-black text-slate-900 tracking-tight mt-1">Dashboard Audit & Evaluasi Pembelajaran</h2>
-          <p class="text-xs text-slate-500">Merekap seluruh respons pengujian dan evaluasi integritas tenaga pengajar.</p>
+          <p class="text-xs text-slate-500">Merekap seluruh respons pengujian dan evaluasi integritas tenaga pengajar (Supabase Database).</p>
         </div>
 
         <div class="flex items-center gap-2 w-full md:w-auto">
@@ -513,7 +515,7 @@
     </div>
   </div>
 
-  <!-- MODAL KONFIRMASI HAPUS JAWABAN -->
+  <!-- Modal Konfirmasi Hapus Jawaban -->
   <div id="modal-delete" class="hidden fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="glass-panel rounded-2xl max-w-xs w-full p-5 sm:p-6 text-center space-y-4 shadow-2xl border border-slate-200 view-transition">
       <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 mx-auto flex items-center justify-center text-xl shadow-inner">
@@ -524,10 +526,10 @@
         <p class="text-xs text-slate-500 mt-1" id="delete-modal-msg">Data yang dihapus tidak dapat dipulihkan kembali.</p>
       </div>
       <div class="flex gap-2 pt-1">
-        <button onclick="closeDeleteModal()" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
+        <button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
           Batal
         </button>
-        <button onclick="executeDeleteRow()" id="btn-confirm-delete" class="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition shadow-md shadow-rose-600/20 flex items-center justify-center gap-1.5">
+        <button onclick="executeDeleteRow()" id="btn-confirm-delete" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition shadow-md shadow-rose-600/20 flex items-center justify-center gap-1.5">
           <span>Ya, Hapus</span>
         </button>
       </div>
@@ -597,8 +599,22 @@
       "2602023": { nama: "Syamil Alif Ramdani Yuwono", jurusan: "Digital Marketing (DM)" }
     };
 
-    // Opsional: Isi dengan URL deployment Apps Script berakhiran /exec jika ingin tersinkronisasi ke Google Sheets
-    const GOOGLE_SCRIPT_URL = ""; 
+    // =========================================================================
+    // 2. KONFIGURASI SUPABASE CLOUD DATABASE
+    // Ganti 2 variabel di bawah ini dengan URL dan Anon Key dari Project Settings -> API
+    // =========================================================================
+    const SUPABASE_URL = "https://dhalohdpjvbphbauztil.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_jLDY42eXu1guTzVM9FC6pg_n_dVyHaM";
+
+    // Inisialisasi Supabase Client
+    let supabaseClient = null;
+    try {
+      if (SUPABASE_URL.startsWith('http')) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch (e) {
+      console.warn("Supabase belum dikonfigurasi: ", e);
+    }
 
     // PIN Pengaman Portal Admin (Bawaan: petik2026)
     const ADMIN_SECRET_PIN = "petik2026";
@@ -609,7 +625,7 @@
     let targetDeleteId = null;
 
     // =========================================================================
-    // 2. AUDIO SYNTHESIZER ENGINE (Web Audio API)
+    // 3. AUDIO SYNTHESIZER ENGINE (Web Audio API)
     // =========================================================================
     const SoundEngine = {
       ctx: null,
@@ -685,7 +701,7 @@
     }
 
     // =========================================================================
-    // 3. TOAST NOTIFIKASI
+    // 4. TOAST NOTIFIKASI
     // =========================================================================
     function showToast(msg, type = 'info') {
       const container = document.getElementById('toast-container');
@@ -704,7 +720,7 @@
       };
 
       toast.className = `p-3.5 rounded-xl border shadow-xl flex items-center gap-3 text-xs pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 ${colors[type] || colors.info}`;
-      toast.innerHTML = `<i class="fa-solid ${icons[type]} text-sm"></i><span class="flex-1 font-medium">${msg}</span>`;
+      toast.innerHTML = `<i class="fa-solid ${icons[type]} text-sm"></i><span class="flex-1 font-medium leading-relaxed">${msg}</span>`;
       container.appendChild(toast);
 
       requestAnimationFrame(() => {
@@ -715,59 +731,6 @@
         toast.classList.add('opacity-0', 'translate-x-full');
         setTimeout(() => toast.remove(), 300);
       }, 3500);
-    }
-
-    // =========================================================================
-    // 4. SISTEM DATA PENYIMPANAN LOCALSTORAGE
-    // =========================================================================
-    const STORAGE_KEY = 'eqlite_submissions_db';
-
-    function getLocalSubmissions() {
-      const data = localStorage.getItem(STORAGE_KEY);
-      if (!data) {
-        const initialMock = [
-          {
-            id: 'mock-1',
-            waktu: new Date().toLocaleDateString('id-ID') + ' 09:15',
-            nim: '2601008',
-            nama: 'Jallaluddin Rachmad',
-            jurusan: 'Pengembangan Perangkat Lunak (PPL)',
-            matkul: 'Pengembangan Perangkat Lunak (PPL)',
-            pemahaman: 'Paham mendalam mengenai Tailwind, Flask, arsitektur MVC dan deployment script.',
-            kendala: 'Koneksi jaringan internet saat push git di jam puncak lab.',
-            kualitas: 'Instruktur sangat responsif dan membimbing dengan studi kasus nyata.',
-            negatif: 'Tidak ada / Sangat amanah'
-          },
-          {
-            id: 'mock-2',
-            waktu: new Date().toLocaleDateString('id-ID') + ' 08:45',
-            nim: '2602001',
-            nama: 'Ahmad Faiz',
-            jurusan: 'Digital Marketing (DM)',
-            matkul: 'Digital Marketing (DM)',
-            pemahaman: 'Mampu menyusun target audience, konten visual dan copywriting hook.',
-            kendala: 'Perlu penguatan pada kalkulasi ROAS dan split testing ads.',
-            kualitas: 'Penyampaian terstruktur dan santai.',
-            negatif: 'Alhamdulillah tidak ada hal negatif. Pengajar berakhlak baik.'
-          }
-        ];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialMock));
-        return initialMock;
-      }
-      return JSON.parse(data);
-    }
-
-    function saveLocalSubmission(item) {
-      const submissions = getLocalSubmissions();
-      submissions.unshift(item);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
-    }
-
-    function deleteLocalSubmission(id) {
-      let submissions = getLocalSubmissions();
-      submissions = submissions.filter(s => s.id !== id);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
-      return submissions;
     }
 
     // =========================================================================
@@ -789,7 +752,7 @@
           ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-mono bg-blue-100 text-blue-700 font-bold border border-blue-200">PPL</span>`
           : `<span class="px-2 py-0.5 rounded-md text-[10px] font-mono bg-purple-100 text-purple-700 font-bold border border-purple-200">DM</span>`;
 
-        hint.innerHTML = `<span class="text-emerald-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Mahasantri terverifikasi: <b>${activeStudent.nama}</b></span>`;
+        hint.innerHTML = `<span class="text-emerald-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Mahasantri: <b>${activeStudent.nama}</b></span>`;
         btn.disabled = false;
         btn.className = 'w-full mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center space-x-2 cursor-pointer shadow-lg shadow-emerald-600/25 active:scale-95';
         SoundEngine.playPop();
@@ -802,7 +765,7 @@
         btn.className = 'w-full mt-3 bg-slate-300 text-slate-500 font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center space-x-2 cursor-not-allowed shadow-none';
         
         if (nim.length === 7) {
-          hint.innerHTML = `<span class="text-rose-500 font-medium flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> NIM tidak ditemukan di data santri Gen-5!</span>`;
+          hint.innerHTML = `<span class="text-rose-500 font-medium flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> NIM tidak terdaftar di Gen-5!</span>`;
         } else {
           hint.innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i><span>NIM: 2601xxx (PPL) atau 2602xxx (DM)</span>`;
         }
@@ -816,8 +779,6 @@
       document.getElementById('screen-auth').classList.add('hidden');
       document.getElementById('screen-form').classList.remove('hidden');
       document.getElementById('progress-wrapper').classList.remove('hidden');
-      document.getElementById('draft-status').classList.remove('hidden');
-      document.getElementById('draft-status').classList.add('flex');
 
       document.getElementById('step-nav-1').classList.add('opacity-50');
       document.getElementById('step-nav-2').classList.remove('opacity-50');
@@ -841,7 +802,6 @@
       SoundEngine.playPop();
       document.getElementById('screen-form').classList.add('hidden');
       document.getElementById('progress-wrapper').classList.add('hidden');
-      document.getElementById('draft-status').classList.add('hidden');
       document.getElementById('screen-auth').classList.remove('hidden');
 
       document.getElementById('step-nav-1').classList.remove('opacity-50');
@@ -964,7 +924,7 @@
     }
 
     // =========================================================================
-    // 8. SUBMIT LAPORAN EVALUASI
+    // 8. SUBMIT EVALUASI KE SUPABASE
     // =========================================================================
     function openConfirmationModal(e) {
       e.preventDefault();
@@ -996,14 +956,10 @@
     async function executeFinalSubmit() {
       const btn = document.getElementById('btn-modal-submit');
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Mengenkripsi...</span>`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Menyimpan ke Cloud...</span>`;
 
       const matkul = document.getElementById('selected-matkul').value;
-      const submissionId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
-
       const payload = {
-        id: submissionId,
-        waktu: new Date().toLocaleDateString('id-ID') + ' ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
         nim: activeStudent.nim,
         nama: activeStudent.nama,
         jurusan: activeStudent.jurusan,
@@ -1014,21 +970,17 @@
         negatif: document.getElementById('q-negatif').value.trim()
       };
 
-      saveLocalSubmission(payload);
-
-      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "") {
-        try {
-          await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-        } catch (err) {
-          console.warn("Sinkronisasi cloud berjalan...", err);
+      // Simpan langsung ke Supabase Table
+      if (supabaseClient) {
+        const { error } = await supabaseClient.from('evaluasi').insert([payload]);
+        if (error) {
+          showToast('Gagal simpan ke Supabase: ' + error.message, 'error');
+          btn.disabled = false;
+          btn.innerHTML = `<span>Ya, Kirim</span><i class="fa-solid fa-paper-plane text-[10px]"></i>`;
+          return;
         }
       } else {
-        await new Promise(r => setTimeout(r, 650));
+        showToast('Supabase URL & Key belum terpasang!', 'warning');
       }
 
       localStorage.removeItem(`eqlite_draft_${activeStudent.nim}`);
@@ -1036,7 +988,6 @@
 
       document.getElementById('screen-form').classList.add('hidden');
       document.getElementById('progress-wrapper').classList.add('hidden');
-      document.getElementById('draft-status').classList.add('hidden');
       
       const successScreen = document.getElementById('screen-success');
       successScreen.classList.remove('hidden');
@@ -1063,7 +1014,7 @@
     }
 
     // =========================================================================
-    // 9. DASHBOARD ADMIN & PENGHAPUSAN JAWABAN
+    // 9. DASHBOARD ADMIN (PENGAMBILAN & PENGHAPUSAN LANGSUNG DARI SUPABASE)
     // =========================================================================
     function openAdminModal() {
       SoundEngine.playPop();
@@ -1088,24 +1039,41 @@
         return;
       }
 
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Mengotentikasi...`;
-
       if (pin !== ADMIN_SECRET_PIN) {
-        showToast('PIN Admin salah! (Gunakan PIN default: petik2026)', 'error');
-        btn.disabled = false;
-        btn.innerHTML = `Buka Portal`;
+        showToast('PIN Admin salah!', 'error');
         return;
       }
 
-      await new Promise(r => setTimeout(r, 300));
-      adminCachedData = getLocalSubmissions();
-      loadAdminDashboard(adminCachedData);
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Memuat Data...`;
+
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient
+          .from('evaluasi')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          showToast('Gagal memuat dari Supabase: ' + error.message, 'error');
+          btn.disabled = false;
+          btn.innerHTML = `Buka Portal`;
+          return;
+        }
+
+        adminCachedData = data.map(item => ({
+          ...item,
+          waktu: new Date(item.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }) + ' WIB'
+        }));
+
+        loadAdminDashboard(adminCachedData);
+        showToast(`Berhasil memuat ${adminCachedData.length} data evaluasi online!`, 'success');
+      } else {
+        showToast('Supabase belum terkonfigurasi!', 'warning');
+      }
 
       btn.disabled = false;
       btn.innerHTML = `Buka Portal`;
       closeAdminModal();
-      showToast('Otorisasi berhasil. Membuka dashboard audit...', 'success');
     }
 
     function loadAdminDashboard(data) {
@@ -1154,7 +1122,7 @@
           <td class="p-3 sm:p-3.5 whitespace-nowrap text-center">
             <button onclick="confirmDeleteRow('${item.id}', '${item.nama}')" 
                     class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 transition flex items-center justify-center mx-auto active:scale-90" 
-                    title="Hapus Evaluasi Ini">
+                    title="Hapus Dari Supabase">
               <i class="fa-solid fa-trash-can text-xs"></i>
             </button>
           </td>
@@ -1167,14 +1135,15 @@
       document.getElementById('stat-attention').innerText = attentionCount;
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Belum ada respon evaluasi</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Belum ada respon evaluasi masuk</td></tr>`;
       }
     }
 
+    // Modal Konfirmasi Hapus Jawaban
     function confirmDeleteRow(id, namaSantri) {
       SoundEngine.playPop();
       targetDeleteId = id;
-      document.getElementById('delete-modal-msg').innerHTML = `Apakah Anda yakin ingin menghapus respon evaluasi milik mahasantri <b>${namaSantri}</b> secara permanen?`;
+      document.getElementById('delete-modal-msg').innerHTML = `Hapus respon evaluasi milik mahasantri <b>${namaSantri}</b> langsung dari database Supabase?`;
       
       const modal = document.getElementById('modal-delete');
       modal.classList.remove('hidden');
@@ -1189,15 +1158,31 @@
       targetDeleteId = null;
     }
 
-    function executeDeleteRow() {
-      if (!targetDeleteId) return;
+    // Eksekusi Hapus Langsung dari Supabase
+    async function executeDeleteRow() {
+      if (!targetDeleteId || !supabaseClient) return;
+
+      const btn = document.getElementById('btn-confirm-delete');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Menghapus...</span>`;
+
+      const { error } = await supabaseClient.from('evaluasi').delete().eq('id', targetDeleteId);
+
+      if (error) {
+        showToast('Gagal menghapus: ' + error.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = `<span>Ya, Hapus</span>`;
+        return;
+      }
 
       SoundEngine.playTrash();
-      adminCachedData = deleteLocalSubmission(targetDeleteId);
-      filterAdminTable();
-
       closeDeleteModal();
-      showToast('Respon evaluasi berhasil dihapus secara permanen!', 'success');
+      showToast('Data berhasil dihapus permanen dari Supabase!', 'success');
+      btn.disabled = false;
+      btn.innerHTML = `<span>Ya, Hapus</span>`;
+
+      // Muat Ulang Tabel Admin
+      verifyAndFetchAdminData();
     }
 
     function filterAdminTable() {
