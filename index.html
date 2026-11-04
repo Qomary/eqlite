@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EQ-Lite | Evaluasi Akademik PeTIK II Jombang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EQ-Lite Enterprise | PeTIK II Jombang</title>
   
   <!-- CDN Framework & Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,34 +13,34 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
     
-    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
 
     /* Surface Glassmorphism */
     .glass-panel {
       background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(24px);
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35), 0 0 1px 1px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.35), 0 0 1px 1px rgba(255, 255, 255, 0.3);
     }
 
     /* Ambient Glow Animations */
     @keyframes pulseGlow1 {
       0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
-      50% { transform: translate(30px, 20px) scale(1.15); opacity: 0.3; }
+      50% { transform: translate(25px, 15px) scale(1.15); opacity: 0.3; }
     }
     @keyframes pulseGlow2 {
       0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
-      50% { transform: translate(-35px, -25px) scale(1.1); opacity: 0.25; }
+      50% { transform: translate(-25px, -20px) scale(1.1); opacity: 0.25; }
     }
     .orb-glow-1 { animation: pulseGlow1 9s ease-in-out infinite; }
     .orb-glow-2 { animation: pulseGlow2 11s ease-in-out infinite; }
 
     /* Page Transitions */
     .view-transition {
-      animation: fadeInScale 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     @keyframes fadeInScale {
-      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      from { opacity: 0; transform: translateY(10px) scale(0.99); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
@@ -57,90 +57,99 @@
 
   <!-- Interactive Ambient Background -->
   <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-    <div class="absolute -top-36 -left-36 w-[34rem] h-[34rem] bg-emerald-600 rounded-full blur-[120px] orb-glow-1"></div>
-    <div class="absolute top-1/3 -right-36 w-[32rem] h-[32rem] bg-teal-500 rounded-full blur-[120px] orb-glow-2"></div>
-    <div class="absolute -bottom-24 left-1/4 w-[28rem] h-[28rem] bg-blue-600/20 rounded-full blur-[130px]"></div>
+    <div class="absolute -top-36 -left-36 w-[28rem] sm:w-[34rem] h-[28rem] sm:h-[34rem] bg-emerald-600 rounded-full blur-[100px] sm:blur-[120px] orb-glow-1"></div>
+    <div class="absolute top-1/3 -right-36 w-[26rem] sm:w-[32rem] h-[26rem] sm:h-[32rem] bg-teal-500 rounded-full blur-[100px] sm:blur-[120px] orb-glow-2"></div>
+    <div class="absolute -bottom-24 left-1/4 w-[22rem] sm:w-[28rem] h-[22rem] sm:h-[28rem] bg-blue-600/20 rounded-full blur-[110px]"></div>
   </div>
 
   <!-- Toast Notifikasi Global -->
-  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+  <div id="toast-container" class="fixed top-4 right-4 left-4 sm:left-auto sm:right-5 sm:top-5 z-50 flex flex-col gap-2 max-w-sm sm:w-full pointer-events-none"></div>
 
-  <!-- Header Navigasi -->
-  <header class="bg-slate-900/85 backdrop-blur-md border-b border-slate-800 text-white sticky top-0 z-40">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-3.5">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-emerald-300 p-[1px] flex items-center justify-center shadow-lg shadow-emerald-500/20">
+  <!-- HEADER RESPONSIVE (PC & HP) -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 text-white sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-3.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+      
+      <!-- Brand & Title (Tidak Tertekuk di HP) -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-emerald-300 p-[1px] flex items-center justify-center shadow-md shadow-emerald-500/20">
           <div class="w-full h-full bg-slate-900 rounded-[11px] flex items-center justify-center">
-            <i class="fa-solid fa-graduation-cap text-emerald-400 text-base"></i>
+            <i class="fa-solid fa-graduation-cap text-emerald-400 text-xs sm:text-base"></i>
           </div>
         </div>
-        <div>
-          <div class="flex items-center space-x-2">
-            <h1 class="font-extrabold text-sm md:text-base tracking-tight text-slate-100">EQ-Lite<span class="text-emerald-400 font-semibold"></span></h1>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-bold tracking-wider">GEN-5</span>
+        <div class="min-w-0">
+          <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-slate-100 whitespace-nowrap">
+              EQ-Lite <span class="text-emerald-400 font-semibold">Pro</span>
+            </h1>
+            <span class="whitespace-nowrap text-[9px] sm:text-[10px] font-mono px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-bold">GEN-5</span>
           </div>
-          <p class="text-[11px] text-slate-400">Pesantren PeTIK II Jombang • Evaluasi Akademik & Integritas Pengajar</p>
+          <!-- Subtitel Otomatis Tersembunyi di Layar HP Sempit -->
+          <p class="hidden sm:block text-[11px] text-slate-400 truncate">PeTIK II Jombang • Evaluasi Akademik & Integritas Pengajar</p>
         </div>
       </div>
 
-      <!-- Action Panel Header -->
-      <div class="flex items-center gap-2">
-        <div id="draft-status" class="hidden items-center gap-1.5 px-2.5 py-1 bg-slate-800/80 border border-slate-700 rounded-lg text-[10px] font-mono text-emerald-400">
+      <!-- Action Panel Header (Ringkas & Fleksibel) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <!-- Draft Status: Ikon di HP, Teks di Laptop -->
+        <div id="draft-status" class="hidden items-center gap-1 sm:gap-1.5 px-2 py-1 bg-slate-800/80 border border-slate-700 rounded-lg text-[10px] font-mono text-emerald-400">
           <i class="fa-solid fa-cloud-arrow-up text-[9px]"></i>
-          <span>Draf Tersimpan</span>
+          <span class="hidden md:inline">Tersimpan</span>
         </div>
 
-        <button onclick="toggleAudio()" id="btn-audio-toggle" title="Matikan/Aktifkan Suara" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-xs text-slate-300 transition active:scale-95">
+        <!-- Tombol Suara -->
+        <button onclick="toggleAudio()" id="btn-audio-toggle" title="Suara" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-xs text-slate-300 transition active:scale-95 shrink-0">
           <i class="fa-solid fa-volume-high text-emerald-400" id="audio-icon"></i>
         </button>
 
-        <button onclick="openAdminModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs text-slate-200 transition flex items-center gap-1.5 active:scale-95 shadow-inner">
+        <!-- Tombol Masuk Portal Admin -->
+        <button onclick="openAdminModal()" class="px-2.5 sm:px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs text-slate-200 transition flex items-center gap-1.5 active:scale-95 shadow-inner shrink-0">
           <i class="fa-solid fa-shield-halved text-amber-400 text-xs"></i>
-          <span class="font-semibold text-[11px]">Portal Admin</span>
+          <span class="font-semibold text-[11px] hidden sm:inline">Portal Admin</span>
+          <span class="font-semibold text-[11px] sm:hidden">Admin</span>
         </button>
       </div>
     </div>
 
-    <!-- Stepper Navigasi Visual -->
-    <div id="nav-stepper" class="bg-slate-900/50 border-t border-slate-800/80 py-2">
-      <div class="max-w-4xl mx-auto px-4 flex items-center justify-between text-[11px]">
-        <div class="flex items-center gap-2" id="step-nav-1">
-          <span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px]">1</span>
-          <span class="font-semibold text-slate-200">Verifikasi NIM</span>
+    <!-- Stepper Navigasi Visual (Responsif Sempurna di HP) -->
+    <div id="nav-stepper" class="bg-slate-900/60 border-t border-slate-800/80 py-1.5 sm:py-2">
+      <div class="max-w-4xl mx-auto px-3 sm:px-4 flex items-center justify-between text-[10px] sm:text-[11px]">
+        <div class="flex items-center gap-1.5 sm:gap-2" id="step-nav-1">
+          <span class="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0">1</span>
+          <span class="font-semibold text-slate-200 whitespace-nowrap"><span class="hidden sm:inline">Verifikasi </span>NIM</span>
         </div>
-        <div class="h-[1px] flex-1 bg-slate-800 mx-3"></div>
-        <div class="flex items-center gap-2 opacity-50" id="step-nav-2">
-          <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[10px]">2</span>
-          <span class="font-medium text-slate-400">Instrumen Uraian</span>
+        <div class="h-[1px] flex-1 bg-slate-800 mx-2 sm:mx-3"></div>
+        <div class="flex items-center gap-1.5 sm:gap-2 opacity-50" id="step-nav-2">
+          <span class="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0">2</span>
+          <span class="font-medium text-slate-400 whitespace-nowrap"><span class="hidden sm:inline">Instrumen </span>Uraian</span>
         </div>
-        <div class="h-[1px] flex-1 bg-slate-800 mx-3"></div>
-        <div class="flex items-center gap-2 opacity-50" id="step-nav-3">
-          <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[10px]">3</span>
-          <span class="font-medium text-slate-400">Resi Evaluasi</span>
+        <div class="h-[1px] flex-1 bg-slate-800 mx-2 sm:mx-3"></div>
+        <div class="flex items-center gap-1.5 sm:gap-2 opacity-50" id="step-nav-3">
+          <span class="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0">3</span>
+          <span class="font-medium text-slate-400 whitespace-nowrap"><span class="hidden sm:inline">Resi </span>Selesai</span>
         </div>
       </div>
     </div>
 
-    <!-- Live Linear Progress Bar -->
+    <!-- Live Dynamic Linear Progress Bar -->
     <div id="progress-wrapper" class="w-full bg-slate-800/80 h-1 hidden">
       <div id="progress-indicator" class="bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-300 h-1 transition-all duration-300 w-0"></div>
     </div>
   </header>
 
   <!-- Konten Utama -->
-  <main class="relative z-10 flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
+  <main class="relative z-10 flex-1 max-w-5xl w-full mx-auto p-3.5 sm:p-6 flex flex-col justify-center">
 
     <!-- SCREEN 1: Validasi Mahasantri -->
-    <section id="screen-auth" class="glass-panel rounded-3xl p-6 md:p-10 border border-slate-100 max-w-lg mx-auto w-full view-transition">
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50 mb-3 shadow-inner">
-          <i class="fa-solid fa-id-badge text-2xl"></i>
+    <section id="screen-auth" class="glass-panel rounded-3xl p-5 sm:p-10 border border-slate-100 max-w-lg mx-auto w-full view-transition">
+      <div class="text-center mb-6 sm:mb-8">
+        <div class="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50 mb-3 shadow-inner">
+          <i class="fa-solid fa-id-badge text-xl sm:text-2xl"></i>
         </div>
-        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Identifikasi Mahasantri</h2>
-        <p class="text-xs md:text-sm text-slate-500 mt-1">Masukkan 7 digit NIM Anda untuk memuat kredensial akademik.</p>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Identifikasi Mahasantri</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Masukkan 7 digit NIM Anda untuk memuat identitas.</p>
       </div>
 
-      <div class="space-y-4 max-w-md mx-auto">
+      <div class="space-y-3.5 sm:space-y-4 max-w-md mx-auto">
         <div>
           <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nomor Induk Mahasantri (NIM)</label>
           <div class="relative">
@@ -148,7 +157,7 @@
               <i class="fa-solid fa-fingerprint text-sm"></i>
             </span>
             <input type="text" id="input-nim" maxlength="7" placeholder="Contoh: 2601008 atau 2602001" oninput="handleNIMLookup(this.value)"
-                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm font-mono text-slate-900 placeholder:text-slate-400 shadow-xs">
+                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm font-mono text-slate-900 placeholder:text-slate-400 shadow-xs">
           </div>
           <p class="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1.5" id="nim-hint">
             <i class="fa-solid fa-circle-info text-[10px]"></i>
@@ -159,20 +168,20 @@
         <div>
           <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap Mahasantri</label>
           <input type="text" id="display-nama" readonly placeholder="Terverifikasi otomatis dari sistem"
-                 class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-700 text-sm font-medium cursor-not-allowed">
+                 class="w-full px-4 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-700 text-sm font-medium cursor-not-allowed">
         </div>
 
         <div>
           <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">Program Keahlian Terdaftar</label>
           <div class="relative">
             <input type="text" id="display-jurusan" readonly placeholder="Terverifikasi otomatis dari sistem"
-                   class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-700 text-sm font-medium cursor-not-allowed">
+                   class="w-full px-4 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-700 text-sm font-medium cursor-not-allowed">
             <span id="badge-jurusan-icon" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"></span>
           </div>
         </div>
 
         <button onclick="goToFormScreen()" id="btn-proceed" disabled
-                class="w-full mt-3 bg-slate-300 text-slate-500 font-semibold py-3.5 px-4 rounded-xl transition duration-200 flex items-center justify-center space-x-2 cursor-not-allowed shadow-none">
+                class="w-full mt-3 bg-slate-300 text-slate-500 font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center space-x-2 cursor-not-allowed shadow-none">
           <span>Lanjutkan ke Lembar Evaluasi</span>
           <i class="fa-solid fa-arrow-right-long text-xs"></i>
         </button>
@@ -180,46 +189,49 @@
     </section>
 
     <!-- SCREEN 2: Formulir Evaluasi Uraian -->
-    <section id="screen-form" class="hidden glass-panel rounded-3xl p-6 md:p-10 border border-slate-100 max-w-3xl mx-auto w-full view-transition">
-      <div class="mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Responden Aktif:</span>
-          <h3 class="text-base font-bold text-slate-900" id="form-header-nama">-</h3>
-          <p class="text-xs text-emerald-700 font-medium" id="form-header-jurusan">-</p>
+    <section id="screen-form" class="hidden glass-panel rounded-3xl p-4 sm:p-10 border border-slate-100 max-w-3xl mx-auto w-full view-transition">
+      
+      <!-- Profil Mahasantri Header -->
+      <div class="mb-5 pb-3 sm:pb-4 border-b border-slate-100 flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400">Responden Aktif:</span>
+          <h3 class="text-sm sm:text-base font-bold text-slate-900 truncate" id="form-header-nama">-</h3>
+          <p class="text-xs text-emerald-700 font-medium truncate" id="form-header-jurusan">-</p>
         </div>
-        <button type="button" onclick="backToAuthScreen()" class="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 rounded-xl transition active:scale-95 flex items-center gap-1.5">
+        <button type="button" onclick="backToAuthScreen()" class="px-2.5 sm:px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 rounded-xl transition active:scale-95 flex items-center gap-1 shrink-0">
           <i class="fa-solid fa-arrow-right-arrow-left text-[10px]"></i>
           <span>Ganti NIM</span>
         </button>
       </div>
 
-      <div class="mb-7 p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-3.5 text-amber-950 text-xs leading-relaxed shadow-xs">
-        <div class="p-2 bg-amber-100 text-amber-700 rounded-xl">
-          <i class="fa-solid fa-shield-halved text-base"></i>
+      <!-- Banner Komitmen Integritas -->
+      <div class="mb-6 p-3.5 sm:p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-3 text-amber-950 text-xs leading-relaxed shadow-xs">
+        <div class="p-1.5 sm:p-2 bg-amber-100 text-amber-700 rounded-xl shrink-0">
+          <i class="fa-solid fa-shield-halved text-sm sm:text-base"></i>
         </div>
         <div>
-          <span class="font-bold block text-sm mb-0.5">Komitmen Integritas & Kerahasiaan PeTIK II</span>
+          <span class="font-bold block text-xs sm:text-sm mb-0.5">Komitmen Integritas & Kerahasiaan PeTIK II</span>
           Seluruh masukan yang Anda berikan dilindungi secara aman. Sampaikan evaluasi secara objektif, jujur, dan berakhlaq demi peningkatan mutu pengajaran dan integritas lembaga.
         </div>
       </div>
 
-      <form id="eval-form" onsubmit="openConfirmationModal(event)" class="space-y-6">
+      <form id="eval-form" onsubmit="openConfirmationModal(event)" class="space-y-5 sm:space-y-6">
         
         <!-- Soal 1: Dua Pilihan Mata Kuliah Eksklusif -->
-        <div class="space-y-2.5">
+        <div class="space-y-2">
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
             1. Nama Mata Kuliah yang Dievaluasi <span class="text-rose-500">*</span>
           </label>
           <p class="text-xs text-slate-500">Pilih salah satu dari 2 mata kuliah konsentrasi berikut:</p>
           
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 pt-1">
             <div onclick="selectMatkul('Digital Marketing (DM)')" id="card-dm"
-                 class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 cursor-pointer transition-all duration-200 group active:scale-[0.98]">
+                 class="relative flex flex-col p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 cursor-pointer transition-all duration-200 group active:scale-[0.98]">
               <div class="flex items-center justify-between mb-2">
-                <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <i class="fa-solid fa-bullhorn text-sm"></i>
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-bullhorn text-xs sm:text-sm"></i>
                 </div>
-                <span class="check-icon hidden text-emerald-600 text-lg"><i class="fa-solid fa-circle-check"></i></span>
+                <span class="check-icon hidden text-emerald-600 text-base sm:text-lg"><i class="fa-solid fa-circle-check"></i></span>
               </div>
               <span class="font-bold text-sm text-slate-900">Digital Marketing (DM)</span>
               <span class="text-[11px] text-slate-500 mt-0.5">Strategi promosi digital, konten viral & ads</span>
@@ -228,10 +240,10 @@
             <div onclick="selectMatkul('Pengembangan Perangkat Lunak (PPL)')" id="card-ppl"
                  class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 cursor-pointer transition-all duration-200 group active:scale-[0.98]">
               <div class="flex items-center justify-between mb-2">
-                <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <i class="fa-solid fa-code text-sm"></i>
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-code text-xs sm:text-sm"></i>
                 </div>
-                <span class="check-icon hidden text-emerald-600 text-lg"><i class="fa-solid fa-circle-check"></i></span>
+                <span class="check-icon hidden text-emerald-600 text-base sm:text-lg"><i class="fa-solid fa-circle-check"></i></span>
               </div>
               <span class="font-bold text-sm text-slate-900">Pengembangan Perangkat Lunak (PPL)</span>
               <span class="text-[11px] text-slate-500 mt-0.5">Frontend, Backend, SDLC, Database & Git</span>
@@ -241,7 +253,7 @@
         </div>
 
         <!-- Soal 2 -->
-        <div class="space-y-2">
+        <div class="space-y-1.5 sm:space-y-2">
           <div class="flex justify-between items-center">
             <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
               2. Sudah Sepaham Apa Terhadap Materi Ini? <span class="text-rose-500">*</span>
@@ -251,11 +263,11 @@
           <p class="text-xs text-slate-500">Uraikan konsep, teori, atau tugas praktik yang sudah Anda kuasai dengan baik.</p>
           <textarea id="q-pemahaman" required rows="3" oninput="handleInputWithAutosave('q-pemahaman', 'count-q2')"
                     placeholder="Contoh: Saya telah memahami konsep dasar dan implementasinya pada proyek studi kasus mandiri..."
-                    class="w-full p-3.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm leading-relaxed"></textarea>
+                    class="w-full p-3 sm:p-3.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm leading-relaxed"></textarea>
         </div>
 
         <!-- Soal 3 -->
-        <div class="space-y-2">
+        <div class="space-y-1.5 sm:space-y-2">
           <div class="flex justify-between items-center">
             <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
               3. Kendala Apa Saja yang Dihadapi? <span class="text-rose-500">*</span>
@@ -265,11 +277,11 @@
           <p class="text-xs text-slate-500">Jelaskan hambatan dalam menyerap materi (ritme pengajar, perangkat praktikum, maupun teori yang rumit).</p>
           <textarea id="q-kendala" required rows="3" oninput="handleInputWithAutosave('q-kendala', 'count-q3')"
                     placeholder="Contoh: Ritme penjelasan terkadang terlalu cepat pada bagian materi tingkat lanjut..."
-                    class="w-full p-3.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm leading-relaxed"></textarea>
+                    class="w-full p-3 sm:p-3.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm leading-relaxed"></textarea>
         </div>
 
         <!-- Soal 4 -->
-        <div class="space-y-2">
+        <div class="space-y-1.5 sm:space-y-2">
           <div class="flex justify-between items-center">
             <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
               4. Bagaimana Kualitas Pengajarnya? <span class="text-rose-500">*</span>
@@ -279,11 +291,11 @@
           <p class="text-xs text-slate-500">Nilai cara penyampaian, kedisiplinan waktu, penguasaan kelas, dan kesabaran pengajar dalam membimbing.</p>
           <textarea id="q-kualitas" required rows="3" oninput="handleInputWithAutosave('q-kualitas', 'count-q4')"
                     placeholder="Uraikan penilaian objektif Anda terhadap gaya mengajar & keteladanan instruktur..."
-                    class="w-full p-3.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm leading-relaxed"></textarea>
+                    class="w-full p-3 sm:p-3.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm leading-relaxed"></textarea>
         </div>
 
         <!-- Soal 5 -->
-        <div class="space-y-2.5 p-4 md:p-5 rounded-2xl bg-rose-50/70 border border-rose-200/80">
+        <div class="space-y-2 p-3.5 sm:p-5 rounded-2xl bg-rose-50/70 border border-rose-200/80">
           <div class="flex justify-between items-center">
             <label class="block text-xs font-bold uppercase tracking-wider text-rose-900 flex items-center gap-1.5">
               <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
@@ -295,7 +307,7 @@
             Apakah pengajar melakukan tindakan yang merugikan santri, staf lain, manajemen, atau bahkan pimpinan lembaga? (Misal: ujaran tidak pantas, diskriminasi, dsb).
           </p>
           
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 pt-1">
             <button type="button" onclick="setQuickNegativeAnswer()" class="text-[11px] font-semibold bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 px-3 py-1.5 rounded-xl transition shadow-xs flex items-center gap-1.5 active:scale-95">
               <i class="fa-solid fa-circle-check text-emerald-600"></i>
               <span>Tidak Ada (Pengajar Berakhlak Baik & Positif)</span>
@@ -304,7 +316,7 @@
 
           <textarea id="q-negatif" required rows="3" oninput="handleInputWithAutosave('q-negatif', 'count-q5')"
                     placeholder="Uraikan catatan faktual bila ada, atau gunakan tombol di atas bila pengajar tidak melakukan hal negatif..."
-                    class="w-full p-3.5 rounded-xl border border-rose-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-none transition text-sm leading-relaxed bg-white"></textarea>
+                    class="w-full p-3 sm:p-3.5 rounded-xl border border-rose-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-none transition text-sm leading-relaxed bg-white"></textarea>
         </div>
 
         <div class="pt-2">
@@ -318,14 +330,14 @@
     </section>
 
     <!-- SCREEN 3: Resi Resmi Pengisian -->
-    <section id="screen-success" class="hidden glass-panel rounded-3xl p-8 max-w-lg mx-auto w-full text-center border border-slate-100 view-transition">
-      <div class="w-16 h-16 mx-auto rounded-3xl bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50 flex items-center justify-center mb-5 shadow-sm">
-        <i class="fa-solid fa-file-circle-check text-2xl"></i>
+    <section id="screen-success" class="hidden glass-panel rounded-3xl p-6 sm:p-8 max-w-lg mx-auto w-full text-center border border-slate-100 view-transition">
+      <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-3xl bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50 flex items-center justify-center mb-4 sm:mb-5 shadow-sm">
+        <i class="fa-solid fa-file-circle-check text-xl sm:text-2xl"></i>
       </div>
-      <h2 class="text-2xl font-black text-slate-900 tracking-tight">Evaluasi Berhasil Direkam!</h2>
-      <p class="text-xs text-slate-500 mt-1 mb-6">Jazakumullahu khairan. Laporan evaluasi Anda telah terenkripsi dan dicatat ke pangkalan data mutu PeTIK II Jombang.</p>
+      <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Evaluasi Berhasil Direkam!</h2>
+      <p class="text-xs text-slate-500 mt-1 mb-5 sm:mb-6">Jazakumullahu khairan. Laporan evaluasi Anda telah terenkripsi dan dicatat ke pangkalan data mutu PeTIK II Jombang.</p>
 
-      <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-5 mb-6 space-y-3 text-left text-xs">
+      <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-4 sm:p-5 mb-5 sm:mb-6 space-y-2.5 sm:space-y-3 text-left text-xs">
         <div class="flex justify-between items-center border-b border-slate-200 pb-2">
           <span class="text-slate-400 font-mono text-[10px]">KODE REFERENSI</span>
           <span class="font-mono font-bold text-slate-800 text-[11px]" id="res-ref-code">EQ-2026-0000</span>
@@ -360,23 +372,23 @@
     </section>
 
     <!-- SCREEN 4: DASHBOARD ADMIN DENGAN FITUR HAPUS -->
-    <section id="screen-admin" class="hidden glass-panel rounded-3xl p-6 md:p-8 border border-slate-100 w-full view-transition space-y-6">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-5 gap-4">
+    <section id="screen-admin" class="hidden glass-panel rounded-3xl p-4 sm:p-8 border border-slate-100 w-full view-transition space-y-5 sm:space-y-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-4 sm:pb-5 gap-3 sm:gap-4">
         <div>
           <div class="flex items-center gap-2">
             <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold font-mono text-[10px] uppercase tracking-wider">Manajemen Internal</span>
             <span class="text-xs text-slate-400">• PeTIK II Jombang</span>
           </div>
-          <h2 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight mt-1">Dashboard Audit & Evaluasi Pembelajaran</h2>
+          <h2 class="text-lg sm:text-2xl font-black text-slate-900 tracking-tight mt-1">Dashboard Audit & Evaluasi Pembelajaran</h2>
           <p class="text-xs text-slate-500">Merekap seluruh respons pengujian dan evaluasi integritas tenaga pengajar.</p>
         </div>
 
         <div class="flex items-center gap-2 w-full md:w-auto">
-          <button onclick="exportToCSV()" class="flex-1 md:flex-initial px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 shadow-sm shadow-emerald-600/20 active:scale-95">
+          <button onclick="exportToCSV()" class="flex-1 md:flex-initial px-3.5 sm:px-4 py-2 sm:py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 shadow-sm shadow-emerald-600/20 active:scale-95">
             <i class="fa-solid fa-file-excel"></i>
             <span>Ekspor CSV</span>
           </button>
-          <button onclick="exitAdmin()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-95">
+          <button onclick="exitAdmin()" class="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-95">
             <i class="fa-solid fa-arrow-right-from-bracket"></i>
             <span>Keluar</span>
           </button>
@@ -384,31 +396,31 @@
       </div>
 
       <!-- Quick Metrics Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
-          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Respon Masuk</span>
-          <div class="text-2xl font-black text-slate-900 mt-1 font-mono" id="stat-total">0</div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+          <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Respon Masuk</span>
+          <div class="text-xl sm:text-2xl font-black text-slate-900 mt-1 font-mono" id="stat-total">0</div>
         </div>
-        <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80">
-          <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Evaluasi Positif/Aman</span>
-          <div class="text-2xl font-black text-emerald-800 mt-1 font-mono" id="stat-safe">0</div>
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80">
+          <span class="text-[10px] sm:text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Evaluasi Positif/Aman</span>
+          <div class="text-xl sm:text-2xl font-black text-emerald-800 mt-1 font-mono" id="stat-safe">0</div>
         </div>
-        <div class="p-4 rounded-2xl bg-rose-50/70 border border-rose-200/80">
-          <span class="text-[11px] font-bold text-rose-700 uppercase tracking-wider">Perlu Atensi (Catatan Khusus)</span>
-          <div class="text-2xl font-black text-rose-800 mt-1 font-mono" id="stat-attention">0</div>
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-rose-50/70 border border-rose-200/80">
+          <span class="text-[10px] sm:text-[11px] font-bold text-rose-700 uppercase tracking-wider">Perlu Atensi (Catatan Khusus)</span>
+          <div class="text-xl sm:text-2xl font-black text-rose-800 mt-1 font-mono" id="stat-attention">0</div>
         </div>
       </div>
 
       <!-- Search & Filter Bar -->
-      <div class="flex flex-col sm:flex-row gap-3">
+      <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
         <div class="relative flex-1">
           <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
             <i class="fa-solid fa-magnifying-glass text-xs"></i>
           </span>
-          <input type="text" id="admin-search-input" oninput="filterAdminTable()" placeholder="Cari berdasarkan nama santri, NIM, atau teks kendala..."
-                 class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 focus:outline-none text-xs">
+          <input type="text" id="admin-search-input" oninput="filterAdminTable()" placeholder="Cari santri, NIM, atau kendala..."
+                 class="w-full pl-9 pr-4 py-2 sm:py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 focus:outline-none text-xs">
         </div>
-        <select id="admin-filter-matkul" onchange="filterAdminTable()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none focus:border-emerald-500">
+        <select id="admin-filter-matkul" onchange="filterAdminTable()" class="px-3.5 py-2 sm:py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none focus:border-emerald-500">
           <option value="ALL">Semua Mata Kuliah</option>
           <option value="Digital Marketing (DM)">Digital Marketing (DM)</option>
           <option value="Pengembangan Perangkat Lunak (PPL)">Pengembangan Perangkat Lunak (PPL)</option>
@@ -416,18 +428,18 @@
       </div>
 
       <!-- Tabel Data Rekapitulasi dengan Kolom Aksi Hapus -->
-      <div class="overflow-x-auto max-h-[520px] border border-slate-200 rounded-2xl shadow-xs">
+      <div class="overflow-x-auto max-h-[500px] border border-slate-200 rounded-2xl shadow-xs">
         <table class="w-full text-left text-xs border-collapse">
           <thead class="bg-slate-100 text-slate-700 font-bold sticky top-0 border-b border-slate-200 uppercase tracking-wider text-[10px]">
             <tr>
-              <th class="p-3.5">Waktu</th>
-              <th class="p-3.5">Mahasantri</th>
-              <th class="p-3.5">Mata Kuliah</th>
-              <th class="p-3.5">Tingkat Pemahaman</th>
-              <th class="p-3.5">Kendala Belajar</th>
-              <th class="p-3.5">Kualitas Pengajar</th>
-              <th class="p-3.5 text-rose-700">Audit Integritas / Catatan Negatif</th>
-              <th class="p-3.5 text-center">Aksi</th>
+              <th class="p-3 sm:p-3.5">Waktu</th>
+              <th class="p-3 sm:p-3.5">Mahasantri</th>
+              <th class="p-3 sm:p-3.5">Mata Kuliah</th>
+              <th class="p-3 sm:p-3.5">Tingkat Pemahaman</th>
+              <th class="p-3 sm:p-3.5">Kendala Belajar</th>
+              <th class="p-3 sm:p-3.5">Kualitas Pengajar</th>
+              <th class="p-3 sm:p-3.5 text-rose-700">Audit Integritas / Catatan Negatif</th>
+              <th class="p-3 sm:p-3.5 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody id="admin-table-body" class="divide-y divide-slate-100 bg-white">
@@ -441,18 +453,18 @@
 
   <!-- Modal Review Sebelum Kirim -->
   <div id="modal-confirm" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="glass-panel rounded-2xl max-w-md w-full p-6 text-left space-y-4 shadow-2xl border border-slate-200 view-transition">
+    <div class="glass-panel rounded-2xl max-w-md w-full p-5 sm:p-6 text-left space-y-4 shadow-2xl border border-slate-200 view-transition">
       <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shrink-0">
           <i class="fa-solid fa-list-check"></i>
         </div>
         <div>
-          <h4 class="font-bold text-slate-900 text-base">Konfirmasi Pengiriman</h4>
+          <h4 class="font-bold text-slate-900 text-sm sm:text-base">Konfirmasi Pengiriman</h4>
           <p class="text-xs text-slate-400">Pastikan seluruh uraian sudah objektif dan sesuai.</p>
         </div>
       </div>
 
-      <div class="bg-slate-50 rounded-xl p-3.5 space-y-2 text-xs">
+      <div class="bg-slate-50 rounded-xl p-3 sm:p-3.5 space-y-2 text-xs">
         <div>
           <span class="text-slate-400 block text-[10px] font-bold uppercase">Mata Kuliah:</span>
           <span class="font-semibold text-slate-800" id="modal-preview-matkul">-</span>
@@ -463,12 +475,12 @@
         </div>
       </div>
 
-      <div class="flex gap-2.5 pt-2">
+      <div class="flex gap-2.5 pt-1">
         <button onclick="closeConfirmationModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
           Periksa Lagi
         </button>
-        <button onclick="executeFinalSubmit()" id="btn-modal-submit" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2">
-          <span>Ya, Kirim Permanen</span>
+        <button onclick="executeFinalSubmit()" id="btn-modal-submit" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-md shadow-emerald-600/20 flex items-center justify-center gap-1.5 sm:gap-2">
+          <span>Ya, Kirim</span>
           <i class="fa-solid fa-paper-plane text-[10px]"></i>
         </button>
       </div>
@@ -477,7 +489,7 @@
 
   <!-- Modal Input PIN Otorisasi Admin -->
   <div id="modal-admin-pin" class="hidden fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="glass-panel rounded-2xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl border border-slate-200 view-transition">
+    <div class="glass-panel rounded-2xl max-w-xs w-full p-5 sm:p-6 text-center space-y-4 shadow-2xl border border-slate-200 view-transition">
       <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 mx-auto flex items-center justify-center text-xl shadow-inner">
         <i class="fa-solid fa-lock"></i>
       </div>
@@ -491,10 +503,10 @@
              onkeydown="if(event.key === 'Enter') verifyAndFetchAdminData()">
 
       <div class="flex gap-2 pt-1">
-        <button onclick="closeAdminModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
+        <button onclick="closeAdminModal()" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
           Batal
         </button>
-        <button onclick="verifyAndFetchAdminData()" id="btn-admin-login" class="flex-1 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-md">
+        <button onclick="verifyAndFetchAdminData()" id="btn-admin-login" class="flex-1 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-md">
           Buka Portal
         </button>
       </div>
@@ -503,7 +515,7 @@
 
   <!-- MODAL KONFIRMASI HAPUS JAWABAN -->
   <div id="modal-delete" class="hidden fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="glass-panel rounded-2xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl border border-slate-200 view-transition">
+    <div class="glass-panel rounded-2xl max-w-xs w-full p-5 sm:p-6 text-center space-y-4 shadow-2xl border border-slate-200 view-transition">
       <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 mx-auto flex items-center justify-center text-xl shadow-inner">
         <i class="fa-solid fa-trash-can"></i>
       </div>
@@ -512,10 +524,10 @@
         <p class="text-xs text-slate-500 mt-1" id="delete-modal-msg">Data yang dihapus tidak dapat dipulihkan kembali.</p>
       </div>
       <div class="flex gap-2 pt-1">
-        <button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
+        <button onclick="closeDeleteModal()" class="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
           Batal
         </button>
-        <button onclick="executeDeleteRow()" id="btn-confirm-delete" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition shadow-md shadow-rose-600/20 flex items-center justify-center gap-1.5">
+        <button onclick="executeDeleteRow()" id="btn-confirm-delete" class="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition shadow-md shadow-rose-600/20 flex items-center justify-center gap-1.5">
           <span>Ya, Hapus</span>
         </button>
       </div>
@@ -523,7 +535,7 @@
   </div>
 
   <!-- Footer -->
-  <footer class="relative z-10 py-3.5 text-center text-slate-500 text-[11px] border-t border-slate-800 bg-slate-950/40">
+  <footer class="relative z-10 py-3 text-center text-slate-500 text-[10px] sm:text-[11px] border-t border-slate-800 bg-slate-950/40">
     <p>© 2026 Lembaga Pesantren Teknologi Informasi & Komunikasi (PeTIK) II Jombang</p>
   </footer>
 
@@ -585,8 +597,8 @@
       "2602023": { nama: "Syamil Alif Ramdani Yuwono", jurusan: "Digital Marketing (DM)" }
     };
 
-    // Opsional: URL Web App Google Apps Script
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7xg-LPcoYVgDunAsR0k82NtvzOIsklQLjX_V0clqXjEOSMqpoBSGI0LiBpcBzovAz/exec"; 
+    // Opsional: Isi dengan URL deployment Apps Script berakhiran /exec jika ingin tersinkronisasi ke Google Sheets
+    const GOOGLE_SCRIPT_URL = ""; 
 
     // PIN Pengaman Portal Admin (Bawaan: petik2026)
     const ADMIN_SECRET_PIN = "petik2026";
@@ -713,7 +725,6 @@
     function getLocalSubmissions() {
       const data = localStorage.getItem(STORAGE_KEY);
       if (!data) {
-        // Data simulasi awal agar langsung bisa dicoba di VS Code
         const initialMock = [
           {
             id: 'mock-1',
@@ -748,7 +759,7 @@
 
     function saveLocalSubmission(item) {
       const submissions = getLocalSubmissions();
-      submissions.unshift(item); // Masukkan paling atas
+      submissions.unshift(item);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
     }
 
@@ -775,8 +786,8 @@
 
         const isPPL = activeStudent.jurusan.includes('PPL');
         iconContainer.innerHTML = isPPL 
-          ? `<span class="px-2.5 py-0.5 rounded-md text-[10px] font-mono bg-blue-100 text-blue-700 font-bold border border-blue-200">PPL</span>`
-          : `<span class="px-2.5 py-0.5 rounded-md text-[10px] font-mono bg-purple-100 text-purple-700 font-bold border border-purple-200">DM</span>`;
+          ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-mono bg-blue-100 text-blue-700 font-bold border border-blue-200">PPL</span>`
+          : `<span class="px-2 py-0.5 rounded-md text-[10px] font-mono bg-purple-100 text-purple-700 font-bold border border-purple-200">DM</span>`;
 
         hint.innerHTML = `<span class="text-emerald-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Mahasantri terverifikasi: <b>${activeStudent.nama}</b></span>`;
         btn.disabled = false;
@@ -810,7 +821,7 @@
 
       document.getElementById('step-nav-1').classList.add('opacity-50');
       document.getElementById('step-nav-2').classList.remove('opacity-50');
-      document.getElementById('step-nav-2').querySelector('span').className = 'w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px]';
+      document.getElementById('step-nav-2').querySelector('span').className = 'w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0';
 
       document.getElementById('form-header-nama').innerText = activeStudent.nama;
       document.getElementById('form-header-jurusan').innerText = `${activeStudent.nim} • ${activeStudent.jurusan}`;
@@ -835,7 +846,7 @@
 
       document.getElementById('step-nav-1').classList.remove('opacity-50');
       document.getElementById('step-nav-2').classList.add('opacity-50');
-      document.getElementById('step-nav-2').querySelector('span').className = 'w-5 h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[10px]';
+      document.getElementById('step-nav-2').querySelector('span').className = 'w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0';
     }
 
     // =========================================================================
@@ -849,16 +860,16 @@
       const cardPPL = document.getElementById('card-ppl');
 
       if (matkulName === 'Digital Marketing (DM)') {
-        cardDM.className = 'relative flex flex-col p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 shadow-md ring-4 ring-emerald-500/10 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
+        cardDM.className = 'relative flex flex-col p-3.5 sm:p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 shadow-md ring-4 ring-emerald-500/10 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
         cardDM.querySelector('.check-icon').classList.remove('hidden');
 
-        cardPPL.className = 'relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 opacity-60 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
+        cardPPL.className = 'relative flex flex-col p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 opacity-60 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
         cardPPL.querySelector('.check-icon').classList.add('hidden');
       } else {
-        cardPPL.className = 'relative flex flex-col p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 shadow-md ring-4 ring-emerald-500/10 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
+        cardPPL.className = 'relative flex flex-col p-3.5 sm:p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 shadow-md ring-4 ring-emerald-500/10 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
         cardPPL.querySelector('.check-icon').classList.remove('hidden');
 
-        cardDM.className = 'relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 opacity-60 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
+        cardDM.className = 'relative flex flex-col p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 opacity-60 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
         cardDM.querySelector('.check-icon').classList.add('hidden');
       }
 
@@ -1003,10 +1014,8 @@
         negatif: document.getElementById('q-negatif').value.trim()
       };
 
-      // Simpan permanen ke penyimpanan lokal browser (VS Code mode)
       saveLocalSubmission(payload);
 
-      // Kirim ke backend jika URL Google Script diatur
       if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "") {
         try {
           await fetch(GOOGLE_SCRIPT_URL, {
@@ -1034,7 +1043,7 @@
 
       document.getElementById('step-nav-2').classList.add('opacity-50');
       document.getElementById('step-nav-3').classList.remove('opacity-50');
-      document.getElementById('step-nav-3').querySelector('span').className = 'w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px]';
+      document.getElementById('step-nav-3').querySelector('span').className = 'w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[9px] sm:text-[10px] shrink-0';
 
       const randomHex = Math.random().toString(16).substring(2, 6).toUpperCase();
       document.getElementById('res-ref-code').innerText = `EQ-2026-${activeStudent.nim}-${randomHex}`;
@@ -1089,7 +1098,6 @@
         return;
       }
 
-      // Ambil data dari penyimpanan lokal
       await new Promise(r => setTimeout(r, 300));
       adminCachedData = getLocalSubmissions();
       loadAdminDashboard(adminCachedData);
@@ -1126,26 +1134,26 @@
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
         tr.innerHTML = `
-          <td class="p-3.5 font-mono text-[11px] text-slate-500 whitespace-nowrap">${item.waktu}</td>
-          <td class="p-3.5 whitespace-nowrap">
+          <td class="p-3 sm:p-3.5 font-mono text-[11px] text-slate-500 whitespace-nowrap">${item.waktu}</td>
+          <td class="p-3 sm:p-3.5 whitespace-nowrap">
             <div class="font-bold text-slate-900">${item.nama}</div>
             <div class="font-mono text-[10px] text-slate-400">${item.nim} • ${item.jurusan.includes('PPL') ? 'PPL' : 'DM'}</div>
           </td>
-          <td class="p-3.5 whitespace-nowrap">
+          <td class="p-3 sm:p-3.5 whitespace-nowrap">
             <span class="px-2 py-1 rounded-md text-[10px] font-bold font-mono ${item.matkul.includes('PPL') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}">
               ${item.matkul}
             </span>
           </td>
-          <td class="p-3.5 min-w-[190px] text-slate-700 leading-relaxed">${item.pemahaman}</td>
-          <td class="p-3.5 min-w-[190px] text-slate-700 leading-relaxed">${item.kendala}</td>
-          <td class="p-3.5 min-w-[190px] text-slate-700 leading-relaxed">${item.kualitas}</td>
-          <td class="p-3.5 min-w-[210px] font-medium leading-relaxed ${isNegatifSafe ? 'text-slate-500' : 'text-rose-700 font-bold bg-rose-50/60 rounded-xl p-2'}">
+          <td class="p-3 sm:p-3.5 min-w-[170px] text-slate-700 leading-relaxed">${item.pemahaman}</td>
+          <td class="p-3 sm:p-3.5 min-w-[170px] text-slate-700 leading-relaxed">${item.kendala}</td>
+          <td class="p-3 sm:p-3.5 min-w-[170px] text-slate-700 leading-relaxed">${item.kualitas}</td>
+          <td class="p-3 sm:p-3.5 min-w-[200px] font-medium leading-relaxed ${isNegatifSafe ? 'text-slate-500' : 'text-rose-700 font-bold bg-rose-50/60 rounded-xl p-2'}">
             ${!isNegatifSafe ? '<i class="fa-solid fa-triangle-exclamation mr-1 text-rose-600"></i>' : ''}
             ${item.negatif}
           </td>
-          <td class="p-3.5 whitespace-nowrap text-center">
+          <td class="p-3 sm:p-3.5 whitespace-nowrap text-center">
             <button onclick="confirmDeleteRow('${item.id}', '${item.nama}')" 
-                    class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 transition flex items-center justify-center mx-auto active:scale-90 shadow-2xs" 
+                    class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 transition flex items-center justify-center mx-auto active:scale-90" 
                     title="Hapus Evaluasi Ini">
               <i class="fa-solid fa-trash-can text-xs"></i>
             </button>
@@ -1159,11 +1167,10 @@
       document.getElementById('stat-attention').innerText = attentionCount;
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">Belum ada respon evaluasi</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Belum ada respon evaluasi</td></tr>`;
       }
     }
 
-    // Dialog Konfirmasi Hapus Baris
     function confirmDeleteRow(id, namaSantri) {
       SoundEngine.playPop();
       targetDeleteId = id;
@@ -1182,15 +1189,11 @@
       targetDeleteId = null;
     }
 
-    // Eksekusi Penghapusan
     function executeDeleteRow() {
       if (!targetDeleteId) return;
 
       SoundEngine.playTrash();
-      // Hapus dari penyimpanan browser
       adminCachedData = deleteLocalSubmission(targetDeleteId);
-      
-      // Render ulang tabel & metrik
       filterAdminTable();
 
       closeDeleteModal();
