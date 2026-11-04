@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EQ-Lite | Evaluasi Akademik PeTIK II Jombang</title>
+  
+  <!-- CDN Framework & Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Surface Glassmorphism */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(24px);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35), 0 0 1px 1px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Ambient Glow Animations */
+    @keyframes pulseGlow1 {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+      50% { transform: translate(30px, 20px) scale(1.15); opacity: 0.3; }
+    }
+    @keyframes pulseGlow2 {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+      50% { transform: translate(-35px, -25px) scale(1.1); opacity: 0.25; }
+    }
+    .orb-glow-1 { animation: pulseGlow1 9s ease-in-out infinite; }
+    .orb-glow-2 { animation: pulseGlow2 11s ease-in-out infinite; }
+
+    /* Page Transitions */
+    .view-transition {
+      animation: fadeInScale 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Print View */
+    @media print {
+      body { background: white !important; color: #0f172a !important; }
+      header, footer, .no-print, button { display: none !important; }
+      .glass-panel { box-shadow: none !important; border: 1px solid #94a3b8 !important; padding: 1.5rem !important; }
+      #screen-success { display: block !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-800 antialiased min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white relative overflow-x-hidden">
+
+  <!-- Interactive Ambient Background -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-36 -left-36 w-[34rem] h-[34rem] bg-emerald-600 rounded-full blur-[120px] orb-glow-1"></div>
+    <div class="absolute top-1/3 -right-36 w-[32rem] h-[32rem] bg-teal-500 rounded-full blur-[120px] orb-glow-2"></div>
+    <div class="absolute -bottom-24 left-1/4 w-[28rem] h-[28rem] bg-blue-600/20 rounded-full blur-[130px]"></div>
+  </div>
+
+  <!-- Toast Notifikasi Global -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- Header Navigasi -->
+  <header class="bg-slate-900/85 backdrop-blur-md border-b border-slate-800 text-white sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-emerald-300 p-[1px] flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <div class="w-full h-full bg-slate-900 rounded-[11px] flex items-center justify-center">
+            <i class="fa-solid fa-graduation-cap text-emerald-400 text-base"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-extrabold text-sm md:text-base tracking-tight text-slate-100">EQ-Lite<span class="text-emerald-400 font-semibold"></span></h1>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-bold tracking-wider">GEN-5</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Pesantren PeTIK II Jombang • Evaluasi Akademik & Integritas Pengajar</p>
+        </div>
+      </div>
+
+      <!-- Action Panel Header -->
+      <div class="flex items-center gap-2">
+        <div id="draft-status" class="hidden items-center gap-1.5 px-2.5 py-1 bg-slate-800/80 border border-slate-700 rounded-lg text-[10px] font-mono text-emerald-400">
+          <i class="fa-solid fa-cloud-arrow-up text-[9px]"></i>
+          <span>Draf Tersimpan</span>
+        </div>
+
+        <button onclick="toggleAudio()" id="btn-audio-toggle" title="Matikan/Aktifkan Suara" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-xs text-slate-300 transition active:scale-95">
+          <i class="fa-solid fa-volume-high text-emerald-400" id="audio-icon"></i>
+        </button>
+
+        <button onclick="openAdminModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs text-slate-200 transition flex items-center gap-1.5 active:scale-95 shadow-inner">
+          <i class="fa-solid fa-shield-halved text-amber-400 text-xs"></i>
+          <span class="font-semibold text-[11px]">Portal Admin</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stepper Navigasi Visual -->
+    <div id="nav-stepper" class="bg-slate-900/50 border-t border-slate-800/80 py-2">
+      <div class="max-w-4xl mx-auto px-4 flex items-center justify-between text-[11px]">
+        <div class="flex items-center gap-2" id="step-nav-1">
+          <span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px]">1</span>
+          <span class="font-semibold text-slate-200">Verifikasi NIM</span>
+        </div>
+        <div class="h-[1px] flex-1 bg-slate-800 mx-3"></div>
+        <div class="flex items-center gap-2 opacity-50" id="step-nav-2">
+          <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[10px]">2</span>
+          <span class="font-medium text-slate-400">Instrumen Uraian</span>
+        </div>
+        <div class="h-[1px] flex-1 bg-slate-800 mx-3"></div>
+        <div class="flex items-center gap-2 opacity-50" id="step-nav-3">
+          <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[10px]">3</span>
+          <span class="font-medium text-slate-400">Resi Evaluasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Linear Progress Bar -->
+    <div id="progress-wrapper" class="w-full bg-slate-800/80 h-1 hidden">
+      <div id="progress-indicator" class="bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-300 h-1 transition-all duration-300 w-0"></div>
+    </div>
+  </header>
+
+  <!-- Konten Utama -->
+  <main class="relative z-10 flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
+
+    <!-- SCREEN 1: Validasi Mahasantri -->
+    <section id="screen-auth" class="glass-panel rounded-3xl p-6 md:p-10 border border-slate-100 max-w-lg mx-auto w-full view-transition">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50 mb-3 shadow-inner">
+          <i class="fa-solid fa-id-badge text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Identifikasi Mahasantri</h2>
+        <p class="text-xs md:text-sm text-slate-500 mt-1">Masukkan 7 digit NIM Anda untuk memuat kredensial akademik.</p>
+      </div>
+
+      <div class="space-y-4 max-w-md mx-auto">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nomor Induk Mahasantri (NIM)</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <i class="fa-solid fa-fingerprint text-sm"></i>
+            </span>
+            <input type="text" id="input-nim" maxlength="7" placeholder="Contoh: 2601008 atau 2602001" oninput="handleNIMLookup(this.value)"
+                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm font-mono text-slate-900 placeholder:text-slate-400 shadow-xs">
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1.5" id="nim-hint">
+            <i class="fa-solid fa-circle-info text-[10px]"></i>
+            <span>NIM: 2601xxx (PPL) atau 2602xxx (DM)</span>
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap Mahasantri</label>
+          <input type="text" id="display-nama" readonly placeholder="Terverifikasi otomatis dari sistem"
+                 class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-700 text-sm font-medium cursor-not-allowed">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">Program Keahlian Terdaftar</label>
+          <div class="relative">
+            <input type="text" id="display-jurusan" readonly placeholder="Terverifikasi otomatis dari sistem"
+                   class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-700 text-sm font-medium cursor-not-allowed">
+            <span id="badge-jurusan-icon" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"></span>
+          </div>
+        </div>
+
+        <button onclick="goToFormScreen()" id="btn-proceed" disabled
+                class="w-full mt-3 bg-slate-300 text-slate-500 font-semibold py-3.5 px-4 rounded-xl transition duration-200 flex items-center justify-center space-x-2 cursor-not-allowed shadow-none">
+          <span>Lanjutkan ke Lembar Evaluasi</span>
+          <i class="fa-solid fa-arrow-right-long text-xs"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: Formulir Evaluasi Uraian -->
+    <section id="screen-form" class="hidden glass-panel rounded-3xl p-6 md:p-10 border border-slate-100 max-w-3xl mx-auto w-full view-transition">
+      <div class="mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Responden Aktif:</span>
+          <h3 class="text-base font-bold text-slate-900" id="form-header-nama">-</h3>
+          <p class="text-xs text-emerald-700 font-medium" id="form-header-jurusan">-</p>
+        </div>
+        <button type="button" onclick="backToAuthScreen()" class="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 rounded-xl transition active:scale-95 flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-right-arrow-left text-[10px]"></i>
+          <span>Ganti NIM</span>
+        </button>
+      </div>
+
+      <div class="mb-7 p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-3.5 text-amber-950 text-xs leading-relaxed shadow-xs">
+        <div class="p-2 bg-amber-100 text-amber-700 rounded-xl">
+          <i class="fa-solid fa-shield-halved text-base"></i>
+        </div>
+        <div>
+          <span class="font-bold block text-sm mb-0.5">Komitmen Integritas & Kerahasiaan PeTIK II</span>
+          Seluruh masukan yang Anda berikan dilindungi secara aman. Sampaikan evaluasi secara objektif, jujur, dan berakhlaq demi peningkatan mutu pengajaran dan integritas lembaga.
+        </div>
+      </div>
+
+      <form id="eval-form" onsubmit="openConfirmationModal(event)" class="space-y-6">
+        
+        <!-- Soal 1: Dua Pilihan Mata Kuliah Eksklusif -->
+        <div class="space-y-2.5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            1. Nama Mata Kuliah yang Dievaluasi <span class="text-rose-500">*</span>
+          </label>
+          <p class="text-xs text-slate-500">Pilih salah satu dari 2 mata kuliah konsentrasi berikut:</p>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div onclick="selectMatkul('Digital Marketing (DM)')" id="card-dm"
+                 class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 cursor-pointer transition-all duration-200 group active:scale-[0.98]">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-bullhorn text-sm"></i>
+                </div>
+                <span class="check-icon hidden text-emerald-600 text-lg"><i class="fa-solid fa-circle-check"></i></span>
+              </div>
+              <span class="font-bold text-sm text-slate-900">Digital Marketing (DM)</span>
+              <span class="text-[11px] text-slate-500 mt-0.5">Strategi promosi digital, konten viral & ads</span>
+            </div>
+
+            <div onclick="selectMatkul('Pengembangan Perangkat Lunak (PPL)')" id="card-ppl"
+                 class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 cursor-pointer transition-all duration-200 group active:scale-[0.98]">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-code text-sm"></i>
+                </div>
+                <span class="check-icon hidden text-emerald-600 text-lg"><i class="fa-solid fa-circle-check"></i></span>
+              </div>
+              <span class="font-bold text-sm text-slate-900">Pengembangan Perangkat Lunak (PPL)</span>
+              <span class="text-[11px] text-slate-500 mt-0.5">Frontend, Backend, SDLC, Database & Git</span>
+            </div>
+          </div>
+          <input type="hidden" id="selected-matkul" required>
+        </div>
+
+        <!-- Soal 2 -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+              2. Sudah Sepaham Apa Terhadap Materi Ini? <span class="text-rose-500">*</span>
+            </label>
+            <span id="count-q2" class="text-[10px] font-mono text-slate-400">0 karakter</span>
+          </div>
+          <p class="text-xs text-slate-500">Uraikan konsep, teori, atau tugas praktik yang sudah Anda kuasai dengan baik.</p>
+          <textarea id="q-pemahaman" required rows="3" oninput="handleInputWithAutosave('q-pemahaman', 'count-q2')"
+                    placeholder="Contoh: Saya telah memahami konsep dasar dan implementasinya pada proyek studi kasus mandiri..."
+                    class="w-full p-3.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm leading-relaxed"></textarea>
+        </div>
+
+        <!-- Soal 3 -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+              3. Kendala Apa Saja yang Dihadapi? <span class="text-rose-500">*</span>
+            </label>
+            <span id="count-q3" class="text-[10px] font-mono text-slate-400">0 karakter</span>
+          </div>
+          <p class="text-xs text-slate-500">Jelaskan hambatan dalam menyerap materi (ritme pengajar, perangkat praktikum, maupun teori yang rumit).</p>
+          <textarea id="q-kendala" required rows="3" oninput="handleInputWithAutosave('q-kendala', 'count-q3')"
+                    placeholder="Contoh: Ritme penjelasan terkadang terlalu cepat pada bagian materi tingkat lanjut..."
+                    class="w-full p-3.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm leading-relaxed"></textarea>
+        </div>
+
+        <!-- Soal 4 -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+              4. Bagaimana Kualitas Pengajarnya? <span class="text-rose-500">*</span>
+            </label>
+            <span id="count-q4" class="text-[10px] font-mono text-slate-400">0 karakter</span>
+          </div>
+          <p class="text-xs text-slate-500">Nilai cara penyampaian, kedisiplinan waktu, penguasaan kelas, dan kesabaran pengajar dalam membimbing.</p>
+          <textarea id="q-kualitas" required rows="3" oninput="handleInputWithAutosave('q-kualitas', 'count-q4')"
+                    placeholder="Uraikan penilaian objektif Anda terhadap gaya mengajar & keteladanan instruktur..."
+                    class="w-full p-3.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition text-sm leading-relaxed"></textarea>
+        </div>
+
+        <!-- Soal 5 -->
+        <div class="space-y-2.5 p-4 md:p-5 rounded-2xl bg-rose-50/70 border border-rose-200/80">
+          <div class="flex justify-between items-center">
+            <label class="block text-xs font-bold uppercase tracking-wider text-rose-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+              <span>5. Apakah Pengajar Melakukan Hal Negatif? <span class="text-rose-600">*</span></span>
+            </label>
+            <span id="count-q5" class="text-[10px] font-mono text-rose-400">0 karakter</span>
+          </div>
+          <p class="text-xs text-rose-800 leading-relaxed">
+            Apakah pengajar melakukan tindakan yang merugikan santri, staf lain, manajemen, atau bahkan pimpinan lembaga? (Misal: ujaran tidak pantas, diskriminasi, dsb).
+          </p>
+          
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="setQuickNegativeAnswer()" class="text-[11px] font-semibold bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 px-3 py-1.5 rounded-xl transition shadow-xs flex items-center gap-1.5 active:scale-95">
+              <i class="fa-solid fa-circle-check text-emerald-600"></i>
+              <span>Tidak Ada (Pengajar Berakhlak Baik & Positif)</span>
+            </button>
+          </div>
+
+          <textarea id="q-negatif" required rows="3" oninput="handleInputWithAutosave('q-negatif', 'count-q5')"
+                    placeholder="Uraikan catatan faktual bila ada, atau gunakan tombol di atas bila pengajar tidak melakukan hal negatif..."
+                    class="w-full p-3.5 rounded-xl border border-rose-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 focus:outline-none transition text-sm leading-relaxed bg-white"></textarea>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" id="btn-submit" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold py-3.5 px-6 rounded-xl transition duration-200 shadow-lg shadow-emerald-600/25 flex items-center justify-center space-x-2 text-xs uppercase tracking-wider">
+            <span>Tinjau & Kirim Evaluasi</span>
+            <i class="fa-solid fa-paper-plane text-xs"></i>
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- SCREEN 3: Resi Resmi Pengisian -->
+    <section id="screen-success" class="hidden glass-panel rounded-3xl p-8 max-w-lg mx-auto w-full text-center border border-slate-100 view-transition">
+      <div class="w-16 h-16 mx-auto rounded-3xl bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50 flex items-center justify-center mb-5 shadow-sm">
+        <i class="fa-solid fa-file-circle-check text-2xl"></i>
+      </div>
+      <h2 class="text-2xl font-black text-slate-900 tracking-tight">Evaluasi Berhasil Direkam!</h2>
+      <p class="text-xs text-slate-500 mt-1 mb-6">Jazakumullahu khairan. Laporan evaluasi Anda telah terenkripsi dan dicatat ke pangkalan data mutu PeTIK II Jombang.</p>
+
+      <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-5 mb-6 space-y-3 text-left text-xs">
+        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+          <span class="text-slate-400 font-mono text-[10px]">KODE REFERENSI</span>
+          <span class="font-mono font-bold text-slate-800 text-[11px]" id="res-ref-code">EQ-2026-0000</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-500 font-medium">Mahasantri:</span>
+          <span class="font-bold text-slate-800 text-sm" id="res-nama">-</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-500 font-medium">NIM / Program:</span>
+          <span class="font-mono text-slate-700" id="res-nim-jurusan">-</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-500 font-medium">Mata Kuliah:</span>
+          <span class="font-bold text-emerald-700" id="res-matkul">-</span>
+        </div>
+        <div class="flex justify-between items-center border-t border-slate-200 pt-2">
+          <span class="text-slate-500 font-medium">Waktu Verifikasi:</span>
+          <span class="font-mono text-slate-600" id="res-waktu">-</span>
+        </div>
+      </div>
+
+      <div class="space-y-2 no-print">
+        <button onclick="window.print()" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold tracking-wider uppercase transition flex items-center justify-center gap-2 active:scale-95 shadow-md">
+          <i class="fa-solid fa-print"></i>
+          <span>Cetak Bukti Resi Pengisian</span>
+        </button>
+        <button onclick="window.location.reload()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition active:scale-95">
+          Isi Evaluasi untuk Mata Kuliah Lain
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: DASHBOARD ADMIN DENGAN FITUR HAPUS -->
+    <section id="screen-admin" class="hidden glass-panel rounded-3xl p-6 md:p-8 border border-slate-100 w-full view-transition space-y-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-5 gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold font-mono text-[10px] uppercase tracking-wider">Manajemen Internal</span>
+            <span class="text-xs text-slate-400">• PeTIK II Jombang</span>
+          </div>
+          <h2 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight mt-1">Dashboard Audit & Evaluasi Pembelajaran</h2>
+          <p class="text-xs text-slate-500">Merekap seluruh respons pengujian dan evaluasi integritas tenaga pengajar.</p>
+        </div>
+
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <button onclick="exportToCSV()" class="flex-1 md:flex-initial px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 shadow-sm shadow-emerald-600/20 active:scale-95">
+            <i class="fa-solid fa-file-excel"></i>
+            <span>Ekspor CSV</span>
+          </button>
+          <button onclick="exitAdmin()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 active:scale-95">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Keluar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Respon Masuk</span>
+          <div class="text-2xl font-black text-slate-900 mt-1 font-mono" id="stat-total">0</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80">
+          <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Evaluasi Positif/Aman</span>
+          <div class="text-2xl font-black text-emerald-800 mt-1 font-mono" id="stat-safe">0</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-rose-50/70 border border-rose-200/80">
+          <span class="text-[11px] font-bold text-rose-700 uppercase tracking-wider">Perlu Atensi (Catatan Khusus)</span>
+          <div class="text-2xl font-black text-rose-800 mt-1 font-mono" id="stat-attention">0</div>
+        </div>
+      </div>
+
+      <!-- Search & Filter Bar -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <div class="relative flex-1">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </span>
+          <input type="text" id="admin-search-input" oninput="filterAdminTable()" placeholder="Cari berdasarkan nama santri, NIM, atau teks kendala..."
+                 class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 focus:outline-none text-xs">
+        </div>
+        <select id="admin-filter-matkul" onchange="filterAdminTable()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none focus:border-emerald-500">
+          <option value="ALL">Semua Mata Kuliah</option>
+          <option value="Digital Marketing (DM)">Digital Marketing (DM)</option>
+          <option value="Pengembangan Perangkat Lunak (PPL)">Pengembangan Perangkat Lunak (PPL)</option>
+        </select>
+      </div>
+
+      <!-- Tabel Data Rekapitulasi dengan Kolom Aksi Hapus -->
+      <div class="overflow-x-auto max-h-[520px] border border-slate-200 rounded-2xl shadow-xs">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="bg-slate-100 text-slate-700 font-bold sticky top-0 border-b border-slate-200 uppercase tracking-wider text-[10px]">
+            <tr>
+              <th class="p-3.5">Waktu</th>
+              <th class="p-3.5">Mahasantri</th>
+              <th class="p-3.5">Mata Kuliah</th>
+              <th class="p-3.5">Tingkat Pemahaman</th>
+              <th class="p-3.5">Kendala Belajar</th>
+              <th class="p-3.5">Kualitas Pengajar</th>
+              <th class="p-3.5 text-rose-700">Audit Integritas / Catatan Negatif</th>
+              <th class="p-3.5 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body" class="divide-y divide-slate-100 bg-white">
+            <!-- Data baris dirender via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal Review Sebelum Kirim -->
+  <div id="modal-confirm" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl max-w-md w-full p-6 text-left space-y-4 shadow-2xl border border-slate-200 view-transition">
+      <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-list-check"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-slate-900 text-base">Konfirmasi Pengiriman</h4>
+          <p class="text-xs text-slate-400">Pastikan seluruh uraian sudah objektif dan sesuai.</p>
+        </div>
+      </div>
+
+      <div class="bg-slate-50 rounded-xl p-3.5 space-y-2 text-xs">
+        <div>
+          <span class="text-slate-400 block text-[10px] font-bold uppercase">Mata Kuliah:</span>
+          <span class="font-semibold text-slate-800" id="modal-preview-matkul">-</span>
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[10px] font-bold uppercase">Ringkasan Pemahaman:</span>
+          <p class="text-slate-600 line-clamp-2 italic" id="modal-preview-pemahaman">-</p>
+        </div>
+      </div>
+
+      <div class="flex gap-2.5 pt-2">
+        <button onclick="closeConfirmationModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
+          Periksa Lagi
+        </button>
+        <button onclick="executeFinalSubmit()" id="btn-modal-submit" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2">
+          <span>Ya, Kirim Permanen</span>
+          <i class="fa-solid fa-paper-plane text-[10px]"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Input PIN Otorisasi Admin -->
+  <div id="modal-admin-pin" class="hidden fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl border border-slate-200 view-transition">
+      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 mx-auto flex items-center justify-center text-xl shadow-inner">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-900 text-base">Otorisasi Manajemen</h4>
+        <p class="text-xs text-slate-400 mt-1">Masukkan PIN keamanan admin untuk membuka rekapitulasi data.</p>
+      </div>
+
+      <input type="password" id="admin-pin-input" placeholder="••••••••" maxlength="12"
+             class="w-full text-center tracking-widest px-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none font-mono text-sm bg-white"
+             onkeydown="if(event.key === 'Enter') verifyAndFetchAdminData()">
+
+      <div class="flex gap-2 pt-1">
+        <button onclick="closeAdminModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
+          Batal
+        </button>
+        <button onclick="verifyAndFetchAdminData()" id="btn-admin-login" class="flex-1 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-md">
+          Buka Portal
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL KONFIRMASI HAPUS JAWABAN -->
+  <div id="modal-delete" class="hidden fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl border border-slate-200 view-transition">
+      <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 mx-auto flex items-center justify-center text-xl shadow-inner">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-900 text-base">Hapus Evaluasi?</h4>
+        <p class="text-xs text-slate-500 mt-1" id="delete-modal-msg">Data yang dihapus tidak dapat dipulihkan kembali.</p>
+      </div>
+      <div class="flex gap-2 pt-1">
+        <button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
+          Batal
+        </button>
+        <button onclick="executeDeleteRow()" id="btn-confirm-delete" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition shadow-md shadow-rose-600/20 flex items-center justify-center gap-1.5">
+          <span>Ya, Hapus</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-10 py-3.5 text-center text-slate-500 text-[11px] border-t border-slate-800 bg-slate-950/40">
+    <p>© 2026 Lembaga Pesantren Teknologi Informasi & Komunikasi (PeTIK) II Jombang</p>
+  </footer>
+
+  <script>
+    // =========================================================================
+    // 1. BASIS DATA MAHASANTRI GEN-5 (PPL: 25 Santri, DM: 23 Santri)
+    // =========================================================================
+    const MAHASANTRI_DB = {
+      // Kelas PPL - 25 Santri[cite: 2]
+      "2601001": { nama: "Ahmad Syafi' Muzaqqi", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601002": { nama: "Ahmad Mustofa", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601003": { nama: "Arip Supraman Wahid", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601004": { nama: "Farhanul Hakim", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601005": { nama: "Fariz Ardiansyah", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601006": { nama: "Hafed Parully Yusman", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601007": { nama: "Iman Taufiqurrahman", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601008": { nama: "Jallaluddin Rachmad", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601009": { nama: "M. Azkiya", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601010": { nama: "M. Irsyad Abiyasa", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601011": { nama: "Muhamad Qois Burhan Nudin", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601012": { nama: "Muhammad Aziz", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601013": { nama: "Muhammad Fahri Ibriz", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601014": { nama: "Muhammad Firdaus", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601015": { nama: "Muhammad Juhdan Alhakim", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601016": { nama: "Muhammad Mukhtar Amin", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601017": { nama: "Muhammad Rafli Eka Prastyo", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601018": { nama: "Muhammad Robain", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601019": { nama: "Muhammad Said", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601020": { nama: "Muhammad Sohib", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601021": { nama: "Muhammad Taswirul Afkarnadhif", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601022": { nama: "Muhammad Yunus", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601023": { nama: "Nasrul Thaib", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601024": { nama: "Sony Fybrian Maulana Setyawan", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+      "2601025": { nama: "Zacky Aji Purnomo", jurusan: "Pengembangan Perangkat Lunak (PPL)" },
+
+      // Kelas DM - 23 Santri[cite: 1]
+      "2602001": { nama: "Ahmad Faiz", jurusan: "Digital Marketing (DM)" },
+      "2602002": { nama: "Ahmad Ismail Amirudin", jurusan: "Digital Marketing (DM)" },
+      "2602003": { nama: "Ahmad Nurrohman", jurusan: "Digital Marketing (DM)" },
+      "2602004": { nama: "Arya Subakti", jurusan: "Digital Marketing (DM)" },
+      "2602005": { nama: "Aslam Al Kautsar", jurusan: "Digital Marketing (DM)" },
+      "2602006": { nama: "Elman Toviqurrahman", jurusan: "Digital Marketing (DM)" },
+      "2602007": { nama: "Hulaemi", jurusan: "Digital Marketing (DM)" },
+      "2602008": { nama: "Lalu Triyandika Sukma Wijaya", jurusan: "Digital Marketing (DM)" },
+      "2602009": { nama: "M. Farid Padlan", jurusan: "Digital Marketing (DM)" },
+      "2602010": { nama: "M. Hidayat", jurusan: "Digital Marketing (DM)" },
+      "2602011": { nama: "Mohamad Imam Tohari", jurusan: "Digital Marketing (DM)" },
+      "2602012": { nama: "Muhammad Arya Alhaqqi", jurusan: "Digital Marketing (DM)" },
+      "2602013": { nama: "Muhammad Hibrul Ummah T", jurusan: "Digital Marketing (DM)" },
+      "2602014": { nama: "Muhammad Mawla", jurusan: "Digital Marketing (DM)" },
+      "2602015": { nama: "Muhammad Meidika Nur Rohman", jurusan: "Digital Marketing (DM)" },
+      "2602016": { nama: "Muhammad Nur Adi Perdana", jurusan: "Digital Marketing (DM)" },
+      "2602017": { nama: "Rahmad Robbiyan Pratama", jurusan: "Digital Marketing (DM)" },
+      "2602018": { nama: "Rahmat Hidayatullah", jurusan: "Digital Marketing (DM)" },
+      "2602019": { nama: "Raka Syifaul Qulub", jurusan: "Digital Marketing (DM)" },
+      "2602020": { nama: "Saufana Is'af Billah", jurusan: "Digital Marketing (DM)" },
+      "2602021": { nama: "Sultan Ramadhan Sudira", jurusan: "Digital Marketing (DM)" },
+      "2602022": { nama: "Syahiqul Hamdi Arif", jurusan: "Digital Marketing (DM)" },
+      "2602023": { nama: "Syamil Alif Ramdani Yuwono", jurusan: "Digital Marketing (DM)" }
+    };
+
+    // Opsional: URL Web App Google Apps Script
+    const GOOGLE_SCRIPT_URL = ""; 
+
+    // PIN Pengaman Portal Admin (Bawaan: petik2026)
+    const ADMIN_SECRET_PIN = "petik2026";
+
+    let activeStudent = null;
+    let isAudioEnabled = true;
+    let adminCachedData = [];
+    let targetDeleteId = null;
+
+    // =========================================================================
+    // 2. AUDIO SYNTHESIZER ENGINE (Web Audio API)
+    // =========================================================================
+    const SoundEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+      },
+      playPop() {
+        if (!isAudioEnabled) return;
+        try {
+          this.init();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(450, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(700, this.ctx.currentTime + 0.05);
+          gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.05);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.05);
+        } catch (e) {}
+      },
+      playSuccess() {
+        if (!isAudioEnabled) return;
+        try {
+          this.init();
+          const now = this.ctx.currentTime;
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.06, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.4);
+          });
+        } catch (e) {}
+      },
+      playTrash() {
+        if (!isAudioEnabled) return;
+        try {
+          this.init();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(140, this.ctx.currentTime + 0.12);
+          gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.12);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.12);
+        } catch (e) {}
+      }
+    };
+
+    function toggleAudio() {
+      isAudioEnabled = !isAudioEnabled;
+      const icon = document.getElementById('audio-icon');
+      if (isAudioEnabled) {
+        icon.className = 'fa-solid fa-volume-high text-emerald-400';
+        SoundEngine.playPop();
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+      }
+    }
+
+    // =========================================================================
+    // 3. TOAST NOTIFIKASI
+    // =========================================================================
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colors = {
+        info: 'bg-slate-900 border-slate-700 text-white',
+        success: 'bg-emerald-600 border-emerald-500 text-white',
+        warning: 'bg-amber-600 border-amber-500 text-white',
+        error: 'bg-rose-600 border-rose-500 text-white'
+      };
+      const icons = {
+        info: 'fa-circle-info',
+        success: 'fa-circle-check',
+        warning: 'fa-triangle-exclamation',
+        error: 'fa-circle-xmark'
+      };
+
+      toast.className = `p-3.5 rounded-xl border shadow-xl flex items-center gap-3 text-xs pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 ${colors[type] || colors.info}`;
+      toast.innerHTML = `<i class="fa-solid ${icons[type]} text-sm"></i><span class="flex-1 font-medium">${msg}</span>`;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-x-full');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // =========================================================================
+    // 4. SISTEM DATA PENYIMPANAN LOCALSTORAGE
+    // =========================================================================
+    const STORAGE_KEY = 'eqlite_submissions_db';
+
+    function getLocalSubmissions() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      if (!data) {
+        // Data simulasi awal agar langsung bisa dicoba di VS Code
+        const initialMock = [
+          {
+            id: 'mock-1',
+            waktu: new Date().toLocaleDateString('id-ID') + ' 09:15',
+            nim: '2601008',
+            nama: 'Jallaluddin Rachmad',
+            jurusan: 'Pengembangan Perangkat Lunak (PPL)',
+            matkul: 'Pengembangan Perangkat Lunak (PPL)',
+            pemahaman: 'Paham mendalam mengenai Tailwind, Flask, arsitektur MVC dan deployment script.',
+            kendala: 'Koneksi jaringan internet saat push git di jam puncak lab.',
+            kualitas: 'Instruktur sangat responsif dan membimbing dengan studi kasus nyata.',
+            negatif: 'Tidak ada / Sangat amanah'
+          },
+          {
+            id: 'mock-2',
+            waktu: new Date().toLocaleDateString('id-ID') + ' 08:45',
+            nim: '2602001',
+            nama: 'Ahmad Faiz',
+            jurusan: 'Digital Marketing (DM)',
+            matkul: 'Digital Marketing (DM)',
+            pemahaman: 'Mampu menyusun target audience, konten visual dan copywriting hook.',
+            kendala: 'Perlu penguatan pada kalkulasi ROAS dan split testing ads.',
+            kualitas: 'Penyampaian terstruktur dan santai.',
+            negatif: 'Alhamdulillah tidak ada hal negatif. Pengajar berakhlak baik.'
+          }
+        ];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialMock));
+        return initialMock;
+      }
+      return JSON.parse(data);
+    }
+
+    function saveLocalSubmission(item) {
+      const submissions = getLocalSubmissions();
+      submissions.unshift(item); // Masukkan paling atas
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+    }
+
+    function deleteLocalSubmission(id) {
+      let submissions = getLocalSubmissions();
+      submissions = submissions.filter(s => s.id !== id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+      return submissions;
+    }
+
+    // =========================================================================
+    // 5. VERIFIKASI & OTENTIKASI NIM
+    // =========================================================================
+    function handleNIMLookup(val) {
+      const nim = val.trim();
+      const hint = document.getElementById('nim-hint');
+      const btn = document.getElementById('btn-proceed');
+      const iconContainer = document.getElementById('badge-jurusan-icon');
+
+      if (MAHASANTRI_DB[nim]) {
+        activeStudent = { nim: nim, ...MAHASANTRI_DB[nim] };
+        document.getElementById('display-nama').value = activeStudent.nama;
+        document.getElementById('display-jurusan').value = activeStudent.jurusan;
+
+        const isPPL = activeStudent.jurusan.includes('PPL');
+        iconContainer.innerHTML = isPPL 
+          ? `<span class="px-2.5 py-0.5 rounded-md text-[10px] font-mono bg-blue-100 text-blue-700 font-bold border border-blue-200">PPL</span>`
+          : `<span class="px-2.5 py-0.5 rounded-md text-[10px] font-mono bg-purple-100 text-purple-700 font-bold border border-purple-200">DM</span>`;
+
+        hint.innerHTML = `<span class="text-emerald-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Mahasantri terverifikasi: <b>${activeStudent.nama}</b></span>`;
+        btn.disabled = false;
+        btn.className = 'w-full mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center space-x-2 cursor-pointer shadow-lg shadow-emerald-600/25 active:scale-95';
+        SoundEngine.playPop();
+      } else {
+        activeStudent = null;
+        document.getElementById('display-nama').value = '';
+        document.getElementById('display-jurusan').value = '';
+        iconContainer.innerHTML = '';
+        btn.disabled = true;
+        btn.className = 'w-full mt-3 bg-slate-300 text-slate-500 font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center space-x-2 cursor-not-allowed shadow-none';
+        
+        if (nim.length === 7) {
+          hint.innerHTML = `<span class="text-rose-500 font-medium flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> NIM tidak ditemukan di data santri Gen-5!</span>`;
+        } else {
+          hint.innerHTML = `<i class="fa-solid fa-circle-info text-[10px]"></i><span>NIM: 2601xxx (PPL) atau 2602xxx (DM)</span>`;
+        }
+      }
+    }
+
+    function goToFormScreen() {
+      if (!activeStudent) return;
+      SoundEngine.playPop();
+
+      document.getElementById('screen-auth').classList.add('hidden');
+      document.getElementById('screen-form').classList.remove('hidden');
+      document.getElementById('progress-wrapper').classList.remove('hidden');
+      document.getElementById('draft-status').classList.remove('hidden');
+      document.getElementById('draft-status').classList.add('flex');
+
+      document.getElementById('step-nav-1').classList.add('opacity-50');
+      document.getElementById('step-nav-2').classList.remove('opacity-50');
+      document.getElementById('step-nav-2').querySelector('span').className = 'w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px]';
+
+      document.getElementById('form-header-nama').innerText = activeStudent.nama;
+      document.getElementById('form-header-jurusan').innerText = `${activeStudent.nim} • ${activeStudent.jurusan}`;
+
+      if (activeStudent.jurusan.includes('Digital Marketing')) {
+        selectMatkul('Digital Marketing (DM)');
+      } else {
+        selectMatkul('Pengembangan Perangkat Lunak (PPL)');
+      }
+
+      restoreDraft();
+      updateFormProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToAuthScreen() {
+      SoundEngine.playPop();
+      document.getElementById('screen-form').classList.add('hidden');
+      document.getElementById('progress-wrapper').classList.add('hidden');
+      document.getElementById('draft-status').classList.add('hidden');
+      document.getElementById('screen-auth').classList.remove('hidden');
+
+      document.getElementById('step-nav-1').classList.remove('opacity-50');
+      document.getElementById('step-nav-2').classList.add('opacity-50');
+      document.getElementById('step-nav-2').querySelector('span').className = 'w-5 h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[10px]';
+    }
+
+    // =========================================================================
+    // 6. SELEKSI DUA MATA KULIAH
+    // =========================================================================
+    function selectMatkul(matkulName) {
+      SoundEngine.playPop();
+      document.getElementById('selected-matkul').value = matkulName;
+
+      const cardDM = document.getElementById('card-dm');
+      const cardPPL = document.getElementById('card-ppl');
+
+      if (matkulName === 'Digital Marketing (DM)') {
+        cardDM.className = 'relative flex flex-col p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 shadow-md ring-4 ring-emerald-500/10 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
+        cardDM.querySelector('.check-icon').classList.remove('hidden');
+
+        cardPPL.className = 'relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 opacity-60 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
+        cardPPL.querySelector('.check-icon').classList.add('hidden');
+      } else {
+        cardPPL.className = 'relative flex flex-col p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 shadow-md ring-4 ring-emerald-500/10 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
+        cardPPL.querySelector('.check-icon').classList.remove('hidden');
+
+        cardDM.className = 'relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 opacity-60 cursor-pointer transition-all duration-200 group active:scale-[0.98]';
+        cardDM.querySelector('.check-icon').classList.add('hidden');
+      }
+
+      saveDraft();
+      updateFormProgress();
+    }
+
+    function setQuickNegativeAnswer() {
+      SoundEngine.playPop();
+      const field = document.getElementById('q-negatif');
+      field.value = "Alhamdulillah tidak ada hal negatif. Pengajar menjalankan tugas dengan berakhlak, adil, disiplin, dan tidak merugikan siapapun.";
+      handleInputWithAutosave('q-negatif', 'count-q5');
+      showToast('Pernyataan positif integritas pengajar terisi.', 'info');
+    }
+
+    // =========================================================================
+    // 7. PROGRESS TRACKER & AUTO-SAVE
+    // =========================================================================
+    function handleInputWithAutosave(inputId, counterId) {
+      const el = document.getElementById(inputId);
+      const len = el.value.length;
+      const counterEl = document.getElementById(counterId);
+      
+      counterEl.innerText = `${len} karakter`;
+      if (len > 0 && len < 20) {
+        counterEl.className = 'text-[10px] font-mono text-amber-500 font-semibold';
+      } else if (len >= 20) {
+        counterEl.className = 'text-[10px] font-mono text-emerald-600 font-semibold';
+      } else {
+        counterEl.className = 'text-[10px] font-mono text-slate-400';
+      }
+
+      saveDraft();
+      updateFormProgress();
+    }
+
+    function updateFormProgress() {
+      const matkul = document.getElementById('selected-matkul').value;
+      const q2 = document.getElementById('q-pemahaman').value.trim();
+      const q3 = document.getElementById('q-kendala').value.trim();
+      const q4 = document.getElementById('q-kualitas').value.trim();
+      const q5 = document.getElementById('q-negatif').value.trim();
+
+      let filledCount = 0;
+      if (matkul) filledCount++;
+      if (q2) filledCount++;
+      if (q3) filledCount++;
+      if (q4) filledCount++;
+      if (q5) filledCount++;
+
+      const pct = Math.round((filledCount / 5) * 100);
+      document.getElementById('progress-indicator').style.width = `${pct}%`;
+    }
+
+    function saveDraft() {
+      if (!activeStudent) return;
+      const draft = {
+        matkul: document.getElementById('selected-matkul').value,
+        q2: document.getElementById('q-pemahaman').value,
+        q3: document.getElementById('q-kendala').value,
+        q4: document.getElementById('q-kualitas').value,
+        q5: document.getElementById('q-negatif').value
+      };
+      localStorage.setItem(`eqlite_draft_${activeStudent.nim}`, JSON.stringify(draft));
+    }
+
+    function restoreDraft() {
+      if (!activeStudent) return;
+      const saved = localStorage.getItem(`eqlite_draft_${activeStudent.nim}`);
+      if (!saved) return;
+
+      try {
+        const draft = JSON.parse(saved);
+        if (draft.matkul) selectMatkul(draft.matkul);
+        if (draft.q2) {
+          document.getElementById('q-pemahaman').value = draft.q2;
+          handleInputWithAutosave('q-pemahaman', 'count-q2');
+        }
+        if (draft.q3) {
+          document.getElementById('q-kendala').value = draft.q3;
+          handleInputWithAutosave('q-kendala', 'count-q3');
+        }
+        if (draft.q4) {
+          document.getElementById('q-kualitas').value = draft.q4;
+          handleInputWithAutosave('q-kualitas', 'count-q4');
+        }
+        if (draft.q5) {
+          document.getElementById('q-negatif').value = draft.q5;
+          handleInputWithAutosave('q-negatif', 'count-q5');
+        }
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // 8. SUBMIT LAPORAN EVALUASI
+    // =========================================================================
+    function openConfirmationModal(e) {
+      e.preventDefault();
+      SoundEngine.playPop();
+
+      const matkul = document.getElementById('selected-matkul').value;
+      const pemahaman = document.getElementById('q-pemahaman').value.trim();
+
+      if (!matkul) {
+        showToast('Silakan pilih salah satu mata kuliah terlebih dahulu!', 'warning');
+        return;
+      }
+
+      document.getElementById('modal-preview-matkul').innerText = matkul;
+      document.getElementById('modal-preview-pemahaman').innerText = pemahaman || '-';
+
+      const modal = document.getElementById('modal-confirm');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeConfirmationModal() {
+      SoundEngine.playPop();
+      const modal = document.getElementById('modal-confirm');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function executeFinalSubmit() {
+      const btn = document.getElementById('btn-modal-submit');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Mengenkripsi...</span>`;
+
+      const matkul = document.getElementById('selected-matkul').value;
+      const submissionId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+
+      const payload = {
+        id: submissionId,
+        waktu: new Date().toLocaleDateString('id-ID') + ' ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+        nim: activeStudent.nim,
+        nama: activeStudent.nama,
+        jurusan: activeStudent.jurusan,
+        matkul: matkul,
+        pemahaman: document.getElementById('q-pemahaman').value.trim(),
+        kendala: document.getElementById('q-kendala').value.trim(),
+        kualitas: document.getElementById('q-kualitas').value.trim(),
+        negatif: document.getElementById('q-negatif').value.trim()
+      };
+
+      // Simpan permanen ke penyimpanan lokal browser (VS Code mode)
+      saveLocalSubmission(payload);
+
+      // Kirim ke backend jika URL Google Script diatur
+      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "") {
+        try {
+          await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } catch (err) {
+          console.warn("Sinkronisasi cloud berjalan...", err);
+        }
+      } else {
+        await new Promise(r => setTimeout(r, 650));
+      }
+
+      localStorage.removeItem(`eqlite_draft_${activeStudent.nim}`);
+      closeConfirmationModal();
+
+      document.getElementById('screen-form').classList.add('hidden');
+      document.getElementById('progress-wrapper').classList.add('hidden');
+      document.getElementById('draft-status').classList.add('hidden');
+      
+      const successScreen = document.getElementById('screen-success');
+      successScreen.classList.remove('hidden');
+
+      document.getElementById('step-nav-2').classList.add('opacity-50');
+      document.getElementById('step-nav-3').classList.remove('opacity-50');
+      document.getElementById('step-nav-3').querySelector('span').className = 'w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px]';
+
+      const randomHex = Math.random().toString(16).substring(2, 6).toUpperCase();
+      document.getElementById('res-ref-code').innerText = `EQ-2026-${activeStudent.nim}-${randomHex}`;
+      document.getElementById('res-nama').innerText = payload.nama;
+      document.getElementById('res-nim-jurusan').innerText = `${payload.nim} • ${payload.jurusan}`;
+      document.getElementById('res-matkul').innerText = payload.matkul;
+      document.getElementById('res-waktu').innerText = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB';
+
+      SoundEngine.playSuccess();
+      confetti({ particleCount: 75, spread: 60, origin: { y: 0.6 } });
+      setTimeout(() => {
+        confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 0, y: 0.7 } });
+      }, 200);
+      setTimeout(() => {
+        confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 1, y: 0.7 } });
+      }, 400);
+    }
+
+    // =========================================================================
+    // 9. DASHBOARD ADMIN & PENGHAPUSAN JAWABAN
+    // =========================================================================
+    function openAdminModal() {
+      SoundEngine.playPop();
+      document.getElementById('admin-pin-input').value = '';
+      document.getElementById('modal-admin-pin').classList.remove('hidden');
+      document.getElementById('modal-admin-pin').classList.add('flex');
+      setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
+    }
+
+    function closeAdminModal() {
+      SoundEngine.playPop();
+      document.getElementById('modal-admin-pin').classList.add('hidden');
+      document.getElementById('modal-admin-pin').classList.remove('flex');
+    }
+
+    async function verifyAndFetchAdminData() {
+      const pin = document.getElementById('admin-pin-input').value.trim();
+      const btn = document.getElementById('btn-admin-login');
+
+      if (!pin) {
+        showToast('Masukkan PIN otorisasi admin!', 'warning');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Mengotentikasi...`;
+
+      if (pin !== ADMIN_SECRET_PIN) {
+        showToast('PIN Admin salah! (Gunakan PIN default: petik2026)', 'error');
+        btn.disabled = false;
+        btn.innerHTML = `Buka Portal`;
+        return;
+      }
+
+      // Ambil data dari penyimpanan lokal
+      await new Promise(r => setTimeout(r, 300));
+      adminCachedData = getLocalSubmissions();
+      loadAdminDashboard(adminCachedData);
+
+      btn.disabled = false;
+      btn.innerHTML = `Buka Portal`;
+      closeAdminModal();
+      showToast('Otorisasi berhasil. Membuka dashboard audit...', 'success');
+    }
+
+    function loadAdminDashboard(data) {
+      document.getElementById('screen-auth').classList.add('hidden');
+      document.getElementById('screen-form').classList.add('hidden');
+      document.getElementById('screen-success').classList.add('hidden');
+      document.getElementById('nav-stepper').classList.add('hidden');
+
+      document.getElementById('screen-admin').classList.remove('hidden');
+      renderAdminTable(data);
+    }
+
+    function renderAdminTable(data) {
+      const tbody = document.getElementById('admin-table-body');
+      tbody.innerHTML = '';
+
+      let safeCount = 0;
+      let attentionCount = 0;
+
+      data.forEach(item => {
+        const isNegatifSafe = item.negatif.toLowerCase().includes('tidak ada') || 
+                              item.negatif.toLowerCase().includes('bersih') || 
+                              item.negatif.toLowerCase().includes('positif');
+        if (isNegatifSafe) safeCount++; else attentionCount++;
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
+        tr.innerHTML = `
+          <td class="p-3.5 font-mono text-[11px] text-slate-500 whitespace-nowrap">${item.waktu}</td>
+          <td class="p-3.5 whitespace-nowrap">
+            <div class="font-bold text-slate-900">${item.nama}</div>
+            <div class="font-mono text-[10px] text-slate-400">${item.nim} • ${item.jurusan.includes('PPL') ? 'PPL' : 'DM'}</div>
+          </td>
+          <td class="p-3.5 whitespace-nowrap">
+            <span class="px-2 py-1 rounded-md text-[10px] font-bold font-mono ${item.matkul.includes('PPL') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}">
+              ${item.matkul}
+            </span>
+          </td>
+          <td class="p-3.5 min-w-[190px] text-slate-700 leading-relaxed">${item.pemahaman}</td>
+          <td class="p-3.5 min-w-[190px] text-slate-700 leading-relaxed">${item.kendala}</td>
+          <td class="p-3.5 min-w-[190px] text-slate-700 leading-relaxed">${item.kualitas}</td>
+          <td class="p-3.5 min-w-[210px] font-medium leading-relaxed ${isNegatifSafe ? 'text-slate-500' : 'text-rose-700 font-bold bg-rose-50/60 rounded-xl p-2'}">
+            ${!isNegatifSafe ? '<i class="fa-solid fa-triangle-exclamation mr-1 text-rose-600"></i>' : ''}
+            ${item.negatif}
+          </td>
+          <td class="p-3.5 whitespace-nowrap text-center">
+            <button onclick="confirmDeleteRow('${item.id}', '${item.nama}')" 
+                    class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 transition flex items-center justify-center mx-auto active:scale-90 shadow-2xs" 
+                    title="Hapus Evaluasi Ini">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('stat-total').innerText = data.length;
+      document.getElementById('stat-safe').innerText = safeCount;
+      document.getElementById('stat-attention').innerText = attentionCount;
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">Belum ada respon evaluasi</td></tr>`;
+      }
+    }
+
+    // Dialog Konfirmasi Hapus Baris
+    function confirmDeleteRow(id, namaSantri) {
+      SoundEngine.playPop();
+      targetDeleteId = id;
+      document.getElementById('delete-modal-msg').innerHTML = `Apakah Anda yakin ingin menghapus respon evaluasi milik mahasantri <b>${namaSantri}</b> secara permanen?`;
+      
+      const modal = document.getElementById('modal-delete');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+      SoundEngine.playPop();
+      const modal = document.getElementById('modal-delete');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      targetDeleteId = null;
+    }
+
+    // Eksekusi Penghapusan
+    function executeDeleteRow() {
+      if (!targetDeleteId) return;
+
+      SoundEngine.playTrash();
+      // Hapus dari penyimpanan browser
+      adminCachedData = deleteLocalSubmission(targetDeleteId);
+      
+      // Render ulang tabel & metrik
+      filterAdminTable();
+
+      closeDeleteModal();
+      showToast('Respon evaluasi berhasil dihapus secara permanen!', 'success');
+    }
+
+    function filterAdminTable() {
+      const query = document.getElementById('admin-search-input').value.toLowerCase().trim();
+      const matkulFilter = document.getElementById('admin-filter-matkul').value;
+
+      const filtered = adminCachedData.filter(item => {
+        const matchesQuery = item.nama.toLowerCase().includes(query) ||
+                             item.nim.includes(query) ||
+                             item.kendala.toLowerCase().includes(query) ||
+                             item.pemahaman.toLowerCase().includes(query) ||
+                             item.negatif.toLowerCase().includes(query);
+
+        const matchesMatkul = (matkulFilter === 'ALL') || (item.matkul === matkulFilter);
+
+        return matchesQuery && matchesMatkul;
+      });
+
+      renderAdminTable(filtered);
+    }
+
+    function exitAdmin() {
+      SoundEngine.playPop();
+      document.getElementById('screen-admin').classList.add('hidden');
+      document.getElementById('nav-stepper').classList.remove('hidden');
+      document.getElementById('screen-auth').classList.remove('hidden');
+    }
+
+    function exportToCSV() {
+      if (!adminCachedData || adminCachedData.length === 0) {
+        showToast('Tidak ada data evaluasi untuk diekspor!', 'warning');
+        return;
+      }
+
+      let csv = 'Waktu,NIM,Nama Mahasantri,Program,Mata Kuliah,Pemahaman,Kendala,Kualitas Pengajar,Audit Integritas / Catatan Negatif\n';
+      adminCachedData.forEach(r => {
+        csv += `"${r.waktu}","${r.nim}","${r.nama}","${r.jurusan}","${r.matkul}","${r.pemahaman.replace(/"/g, '""')}","${r.kendala.replace(/"/g, '""')}","${r.kualitas.replace(/"/g, '""')}","${r.negatif.replace(/"/g, '""')}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', `Rekap_Evaluasi_PeTIK2_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('File CSV rekapitulasi berhasil diunduh.', 'success');
+    }
+  </script>
+</body>
+</html>
